@@ -13,12 +13,12 @@ app.use(
   })
 );
 
-app.get('/api', (req, res) => {
-  const user = req.query.user || 'reedbarger';
-  axios.get(`https://api.github.com/users/${user}`).then(response => {
-    res.json({user: response.data});
-  });
-});
+// app.get('/api', (req, res) => {
+//   const user = req.query.user || 'reedbarger';
+//   axios.get(`https://api.github.com/users/${user}`).then(response => {
+//     res.json({user: response.data});
+//   });
+// });
 
 app.get('/', getCustomers);
 

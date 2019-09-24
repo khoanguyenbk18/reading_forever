@@ -7,7 +7,7 @@ function App() {
   const [user, setUser] = React.useState(null);
 
   React.useEffect(() => {
-    axios.get('/api').then(response => {
+    axios.get('http://localhost:5000').then(response => {
       setUser(response.data);
     });
   });
