@@ -1,4 +1,5 @@
 import userRouter from './routes/users_router';
+import postRouter from './routes/posts_router'
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
@@ -16,9 +17,8 @@ app.use(
 );
 
 //routes
-// app.get('/api/v1/posts', getLastestPosts);
+app.use('/api/v1/posts', postRouter);
 app.use('/api/v1/users', userRouter);
-// app.get('/api/v1/comments', getLastestPosts);
 
 const PORT = 5000;
 app.listen(PORT, () => {

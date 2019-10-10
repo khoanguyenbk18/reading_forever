@@ -1,248 +1,51 @@
+import ItemPost from '../components/item_post';
 import React, {Component} from 'react';
-import Header from '../components/header'
-import SideBar from '../components/sidebar'
+import {getListPost} from '../urls/post_apis';
 class ListPost extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      listPosts: []
+    };
+  }
+
+  componentDidMount() {
+    getListPost()
+      .then(res => {
+        this.setState({listPosts: res.data});
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  renderListPost() {
+    if (this.state.listPosts) {
+      return this.state.listPosts.map((item, index) => {
+        return <ItemPost key={index} post={item} />;
+      });
+    } else {
+      return null;
+    }
+  }
   render() {
     return (
       <div>
-        {/* <Header/> */}
-        {/* <SideBar/> */}
         {/* Title Page */}
         <section
           className='bg-title-page flex-c-m p-t-160 p-b-80 p-l-15 p-r-15'
           style={{backgroundImage: 'url(images/bg-title-page-03.jpg)'}}>
-          <h2 className='tit6 t-center'>Blog</h2>
+          <h2 className='tit6 t-center'>READING FOREVER</h2>
         </section>
         {/* Content page */}
         <section>
-          <div className='bread-crumb bo5-b p-t-17 p-b-17'>
-            <div className='container'>
-              <a href='index.html' className='txt27'>
-                Home
-              </a>
-              <span className='txt29 m-l-10 m-r-10'>/</span>
-              <span className='txt29'>Blog</span>
-            </div>
-          </div>
           <div className='container'>
             <div className='row'>
               <div className='col-md-8 col-lg-9'>
                 <div className='p-t-80 p-b-124 bo5-r h-full p-r-50 p-r-0-md bo-none-md'>
                   {/* Block4 */}
-                  <div className='blo4 p-b-63'>
-                    <div className='pic-blo4 hov-img-zoom bo-rad-10 pos-relative'>
-                      <a href='blog-detail.html'>
-                        <img src='images/blog-05.jpg' alt='IMG-BLOG' />
-                      </a>
-                      <div className='date-blo4 flex-col-c-m'>
-                        <span className='txt30 m-b-4'>28</span>
-                        <span className='txt31'>Dec, 2018</span>
-                      </div>
-                    </div>
-                    <div className='text-blo4 p-t-33'>
-                      <h4 className='p-b-16'>
-                        <a href='blog-detail.html' className='tit9'>
-                          Cooking recipe Delicious
-                        </a>
-                      </h4>
-                      <div className='txt32 flex-w p-b-24'>
-                        <span>
-                          by Admin
-                          <span className='m-r-6 m-l-4'>|</span>
-                        </span>
-                        <span>
-                          28 December, 2018
-                          <span className='m-r-6 m-l-4'>|</span>
-                        </span>
-                        <span>
-                          Cooking, Food
-                          <span className='m-r-6 m-l-4'>|</span>
-                        </span>
-                        <span>8 Comments</span>
-                      </div>
-                      <p>
-                        Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
-                        inceptos himenaeos. Fusce eget dictum tortor. Donec dictum vitae sapien eu
-                        varius
-                      </p>
-                      <a href='blog-detail.html' className='dis-block txt4 m-t-30'>
-                        Continue Reading
-                        <i className='fa fa-long-arrow-right m-l-10' aria-hidden='true' />
-                      </a>
-                    </div>
-                  </div>
+                  {this.renderListPost()}
                   {/* Block4 */}
-                  <div className='blo4 p-b-63'>
-                    <div className='pic-blo4 hov-img-zoom bo-rad-10 pos-relative'>
-                      <a href='blog-detail.html'>
-                        <img src='images/blog-06.jpg' alt='IMG-BLOG' />
-                      </a>
-                      <div className='date-blo4 flex-col-c-m'>
-                        <span className='txt30 m-b-4'>20</span>
-                        <span className='txt31'>Dec, 2018</span>
-                      </div>
-                    </div>
-                    <div className='text-blo4 p-t-33'>
-                      <h4 className='p-b-16'>
-                        <a href='blog-detail.html' className='tit9'>
-                          Pizza is prepared fresh
-                        </a>
-                      </h4>
-                      <div className='txt32 flex-w p-b-24'>
-                        <span>
-                          by Admin
-                          <span className='m-r-6 m-l-4'>|</span>
-                        </span>
-                        <span>
-                          20 December, 2018
-                          <span className='m-r-6 m-l-4'>|</span>
-                        </span>
-                        <span>
-                          Cooking, Food
-                          <span className='m-r-6 m-l-4'>|</span>
-                        </span>
-                        <span>8 Comments</span>
-                      </div>
-                      <p>
-                        Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
-                        inceptos himenaeos. Fusce eget dictum tortor. Donec dictum vitae sapien eu
-                        varius
-                      </p>
-                      <a href='blog-detail.html' className='dis-block txt4 m-t-30'>
-                        Continue Reading
-                        <i className='fa fa-long-arrow-right m-l-10' aria-hidden='true' />
-                      </a>
-                    </div>
-                  </div>
-                  {/* Block4 */}
-                  <div className='blo4 p-b-63'>
-                    <div className='pic-blo4 hov-img-zoom bo-rad-10 pos-relative'>
-                      <a href='blog-detail.html'>
-                        <img src='images/blog-04.jpg' alt='IMG-BLOG' />
-                      </a>
-                      <div className='date-blo4 flex-col-c-m'>
-                        <span className='txt30 m-b-4'>16</span>
-                        <span className='txt31'>Dec, 2018</span>
-                      </div>
-                    </div>
-                    <div className='text-blo4 p-t-33'>
-                      <h4 className='p-b-16'>
-                        <a href='blog-detail.html' className='tit9'>
-                          Style the Wedding Party
-                        </a>
-                      </h4>
-                      <div className='txt32 flex-w p-b-24'>
-                        <span>
-                          by Admin
-                          <span className='m-r-6 m-l-4'>|</span>
-                        </span>
-                        <span>
-                          16 December, 2018
-                          <span className='m-r-6 m-l-4'>|</span>
-                        </span>
-                        <span>
-                          Cooking, Food
-                          <span className='m-r-6 m-l-4'>|</span>
-                        </span>
-                        <span>8 Comments</span>
-                      </div>
-                      <p>
-                        Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
-                        inceptos himenaeos. Fusce eget dictum tortor. Donec dictum vitae sapien eu
-                        varius
-                      </p>
-                      <a href='blog-detail.html' className='dis-block txt4 m-t-30'>
-                        Continue Reading
-                        <i className='fa fa-long-arrow-right m-l-10' aria-hidden='true' />
-                      </a>
-                    </div>
-                  </div>
-                  {/* Block4 */}
-                  <div className='blo4 p-b-63'>
-                    <div className='pic-blo4 hov-img-zoom bo-rad-10 pos-relative'>
-                      <a href='blog-detail.html'>
-                        <img src='images/blog-07.jpg' alt='IMG-BLOG' />
-                      </a>
-                      <div className='date-blo4 flex-col-c-m'>
-                        <span className='txt30 m-b-4'>15</span>
-                        <span className='txt31'>Dec, 2018</span>
-                      </div>
-                    </div>
-                    <div className='text-blo4 p-t-33'>
-                      <h4 className='p-b-16'>
-                        <a href='blog-detail.html' className='tit9'>
-                          Best Places for Wine
-                        </a>
-                      </h4>
-                      <div className='txt32 flex-w p-b-24'>
-                        <span>
-                          by Admin
-                          <span className='m-r-6 m-l-4'>|</span>
-                        </span>
-                        <span>
-                          15 December, 2018
-                          <span className='m-r-6 m-l-4'>|</span>
-                        </span>
-                        <span>
-                          Cooking, Food
-                          <span className='m-r-6 m-l-4'>|</span>
-                        </span>
-                        <span>8 Comments</span>
-                      </div>
-                      <p>
-                        Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
-                        inceptos himenaeos. Fusce eget dictum tortor. Donec dictum vitae sapien eu
-                        varius
-                      </p>
-                      <a href='blog-detail.html' className='dis-block txt4 m-t-30'>
-                        Continue Reading
-                        <i className='fa fa-long-arrow-right m-l-10' aria-hidden='true' />
-                      </a>
-                    </div>
-                  </div>
-                  {/* Block4 */}
-                  <div className='blo4 p-b-63'>
-                    <div className='pic-blo4 hov-img-zoom bo-rad-10 pos-relative'>
-                      <a href='blog-detail.html'>
-                        <img src='images/blog-10.jpg' alt='IMG-BLOG' />
-                      </a>
-                      <div className='date-blo4 flex-col-c-m'>
-                        <span className='txt30 m-b-4'>12</span>
-                        <span className='txt31'>Dec, 2018</span>
-                      </div>
-                    </div>
-                    <div className='text-blo4 p-t-33'>
-                      <h4 className='p-b-16'>
-                        <a href='blog-detail.html' className='tit9'>
-                          Best Places for Wine
-                        </a>
-                      </h4>
-                      <div className='txt32 flex-w p-b-24'>
-                        <span>
-                          by Admin
-                          <span className='m-r-6 m-l-4'>|</span>
-                        </span>
-                        <span>
-                          12 December, 2018
-                          <span className='m-r-6 m-l-4'>|</span>
-                        </span>
-                        <span>
-                          Cooking, Food
-                          <span className='m-r-6 m-l-4'>|</span>
-                        </span>
-                        <span>8 Comments</span>
-                      </div>
-                      <p>
-                        Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
-                        inceptos himenaeos. Fusce eget dictum tortor. Donec dictum vitae sapien eu
-                        varius
-                      </p>
-                      <a href='blog-detail.html' className='dis-block txt4 m-t-30'>
-                        Continue Reading
-                        <i className='fa fa-long-arrow-right m-l-10' aria-hidden='true' />
-                      </a>
-                    </div>
-                  </div>
                   {/* Pagination */}
                   <div className='pagination flex-l-m flex-w m-l--6 p-t-25'>
                     <a href='#' className='item-pagination flex-c-m trans-0-4 active-pagination'>
@@ -369,7 +172,7 @@ class ListPost extends Component {
                     </ul>
                   </div>
                   {/* Archive */}
-                  <div className='archive'>
+                  {/* <div className='archive'>
                     <h4 className='txt33 p-b-20 p-t-43'>Archive</h4>
                     <ul>
                       <li className='flex-sb-m p-t-8 p-b-8'>
@@ -421,7 +224,7 @@ class ListPost extends Component {
                         <span className='txt29'>(26)</span>
                       </li>
                     </ul>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

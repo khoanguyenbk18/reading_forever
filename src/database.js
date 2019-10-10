@@ -1,27 +1,9 @@
 import {Pool} from 'pg';
 
-// const USERS_TABLE = 'users';
-// const POSTS_TABLE = 'posts';
-// const COMMENT_TABLE = 'comments';
-
-// export const getLastestPosts = (request, response) => {
-//   const CREATED_DATE_DESC = `${POSTS_TABLE}.created_date DESC`;
-//   pool.query(`SELECT * FROM ${POSTS_TABLE} ORDER BY ${CREATED_DATE_DESC}`, (error, result) => {
-//     if (error) {
-//       throw error;
-//     }
-//     response.status(200).json(result.rows);
-//   });
-// };
-
-// export const login = (request, response) => {
-//   pool.query(`SELECT * FROM ${USERS_TABLE}`, (error, result) => {
-//     if (error) {
-//       throw error;
-//     }
-//     response.status(200).json(result.rows);
-//   });
-// };
+export const USERS_TABLE = 'users';
+export const POSTS_TABLE = 'posts';
+export const COMMENT_TABLE = 'comments';
+export const CATEGORIES_TABLE = 'categories';
 
 //Singleton
 const dbConnection = () => {

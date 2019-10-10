@@ -1,7 +1,5 @@
-import dbConnection from '../database';
+import dbConnection, {USERS_TABLE} from '../database';
 import HttpStatusCode from 'http-status-codes';
-
-const USERS_TABLE = 'users';
 
 export async function register(request, response, next) {
   try {

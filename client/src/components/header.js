@@ -7,7 +7,7 @@ function Header({}) {
         <div className='container h-full'>
           <div className='wrap_header trans-0-3'>
             {/* Logo */}
-            <div className='logo'>
+            {/* <div className='logo'>
               <a href='index.html'>
                 <img
                   src='images/icons/logo.png'
@@ -15,7 +15,7 @@ function Header({}) {
                   data-logofixed='images/icons/logo2.png'
                 />
               </a>
-            </div>
+            </div> */}
             {/* Menu */}
             <div className='wrap_menu p-l-45 p-l-0-xl'>
               <nav className='menu'>
@@ -24,9 +24,9 @@ function Header({}) {
                     <a href='index.html'>Home</a>
                   </li>
                   <li>
-                    <a href='menu.html'>Menu</a>
+                    <a href='menu.html'>Login</a>
                   </li>
-                  <li>
+                  {/* <li>
                     <a href='reservation.html'>Reservation</a>
                   </li>
                   <li>
@@ -40,22 +40,9 @@ function Header({}) {
                   </li>
                   <li>
                     <a href='contact.html'>Contact</a>
-                  </li>
+                  </li> */}
                 </ul>
               </nav>
-            </div>
-            {/* Social */}
-            <div className='social flex-w flex-l-m p-r-20'>
-              <a href='#'>
-                <i className='fa fa-tripadvisor' aria-hidden='true' />
-              </a>
-              <a href='#'>
-                <i className='fa fa-facebook m-l-21' aria-hidden='true' />
-              </a>
-              <a href='#'>
-                <i className='fa fa-twitter m-l-21' aria-hidden='true' />
-              </a>
-              <button className='btn-show-sidebar m-l-33 trans-0-4' />
             </div>
           </div>
         </div>
