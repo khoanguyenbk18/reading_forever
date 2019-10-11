@@ -2,12 +2,12 @@ import {Pool} from 'pg';
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
-  database: 'SampleDB',
+  database: 'CNPM',
   port: 5432,
   password: 'postgres'
 });
 
-const CUSTOMER_TABLE = 'customer';
+const CUSTOMER_TABLE = 'abc';
 
 export const getCustomers = (request, response) => {
   console.log('run get customer');
