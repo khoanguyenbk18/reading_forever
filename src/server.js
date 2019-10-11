@@ -1,11 +1,14 @@
-import {getCustomers} from './queries';
+import userRouter from './routes/users_router';
+import postRouter from './routes/posts_router'
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
 const bodyParser = require('body-parser');
 const app = express();
 
+//middleware
 app.use(cors());
+app.use(express.json());
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
@@ -13,14 +16,9 @@ app.use(
   })
 );
 
-// app.get('/api', (req, res) => {
-//   const user = req.query.user || 'reedbarger';
-//   axios.get(`https://api.github.com/users/${user}`).then(response => {
-//     res.json({user: response.data});
-//   });
-// });
-
-app.get('/', getCustomers);
+//routes
+app.use('/api/v1/posts', postRouter);
+app.use('/api/v1/users', userRouter);
 
 const PORT = 5000;
 app.listen(PORT, () => {
