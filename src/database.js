@@ -1,9 +1,19 @@
 import {Pool} from 'pg';
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 export const USERS_TABLE = 'users';
 export const POSTS_TABLE = 'posts';
 export const COMMENT_TABLE = 'comments';
 export const CATEGORIES_TABLE = 'categories';
+
+const isProduction = process.env.NODE_ENV === 'production';
+
+const connectionString = `postgres://
+${process.env.DB_USER}:${process.env.DB_PASSWORD}
+@
+${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_DATABASE}`;
 
 //Singleton
 const dbConnection = () => {
@@ -12,12 +22,10 @@ const dbConnection = () => {
   const initDB = async () => {
     try {
       pool = new Pool({
-        user: 'postgres',
-        host: 'localhost',
-        database: 'SampleDB',
-        port: 5432,
-        password: 'postgres'
+        connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
+        ssl: isProduction
       });
+      console.log(connectionString);
       const client = await pool.connect();
       return client;
     } catch (error) {
