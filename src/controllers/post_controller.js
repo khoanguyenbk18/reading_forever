@@ -1,17 +1,20 @@
 import dbConnection, {POSTS_TABLE, USERS_TABLE, CATEGORIES_TABLE} from '../database';
 import HttpStatusCode from 'http-status-codes';
 
+const PAGE_SIZE = 10;
+
 export async function getListPosts(request, response, next) {
   try {
+    const pageNumber = request.query.pageNumber;
+    const OFFSET = (pageNumber - 1) * PAGE_SIZE;
     const db = await dbConnection.get();
-    const LIMIT = 10;
     const result = await db.query(`
     SELECT p.*, u.username , c.name
     FROM ${POSTS_TABLE} p
     INNER JOIN ${USERS_TABLE} u ON p.post_creator_id = u.id
     INNER JOIN ${CATEGORIES_TABLE} c ON p.category = c.id
     ORDER BY p.created_date DESC
-    LIMIT ${LIMIT}`);
+    LIMIT ${PAGE_SIZE} OFFSET ${OFFSET}`);
 
     result.rows.map(post => {
       if (post.hasOwnProperty('name')) {
