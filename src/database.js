@@ -10,11 +10,6 @@ export const CATEGORIES_TABLE = 'categories';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-const connectionString = `postgres://
-${process.env.DB_USER}:${process.env.DB_PASSWORD}
-@
-${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_DATABASE}`;
-
 //Singleton
 const dbConnection = () => {
   let pool = null;
@@ -22,10 +17,13 @@ const dbConnection = () => {
   const initDB = async () => {
     try {
       pool = new Pool({
-        connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
-        ssl: isProduction
+        user:process.env.DB_USER,
+        host:process.env.DB_HOST,
+        port:process.env.DB_PORT,
+        password:process.env.DB_PASSWORD,
+        database:process.env.DB_DATABASE,
+        ssl: true
       });
-      console.log(connectionString);
       const client = await pool.connect();
       return client;
     } catch (error) {

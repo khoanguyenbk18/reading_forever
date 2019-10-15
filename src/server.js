@@ -1,7 +1,5 @@
 import userRouter from './routes/users_router';
 import postRouter from './routes/posts_router';
-const dotenv = require('dotenv');
-dotenv.config();
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
@@ -21,7 +19,6 @@ app.use(
 //routes
 app.use('/api/v1/posts', postRouter);
 app.use('/api/v1/users', userRouter);
-
 const PORT = 5000;
 app.listen(process.env.PORT || PORT, () => {
   console.log(`listening on port: ${PORT}`);
