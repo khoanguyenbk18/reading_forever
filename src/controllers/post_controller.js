@@ -5,7 +5,8 @@ const PAGE_SIZE = 10;
 
 export async function getListPosts(request, response, next) {
   try {
-    const pageNumber = request.query.pageNumber;
+    const pageNumber = request.query.pageNumber ? request.query.pageNumber : 1;
+    console.log('TCL: getListPosts -> pageNumber', pageNumber);
     const OFFSET = (pageNumber - 1) * PAGE_SIZE;
     const db = await dbConnection.get();
     const result = await db.query(`
