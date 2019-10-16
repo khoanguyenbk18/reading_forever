@@ -6,7 +6,7 @@ import About from './about';
 
 import Header from '../components/header';
 import SideBar from '../components/sidebar';
-
+import Footer from '../components/footer'
 class App extends React.Component {
   render() {
     return (
@@ -16,6 +16,7 @@ class App extends React.Component {
         <Route exact path='/' component={ListPost} />
         <Route exact path='/detail' component={PostDetail} />
         <Route exact path='/about' component={About} />
+        <Footer/>
       </Router>
     );
   }

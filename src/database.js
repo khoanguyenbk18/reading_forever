@@ -8,7 +8,7 @@ export const POSTS_TABLE = 'posts';
 export const COMMENT_TABLE = 'comments';
 export const CATEGORIES_TABLE = 'categories';
 
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = false;
 
 //Singleton
 const dbConnection = () => {
@@ -16,14 +16,26 @@ const dbConnection = () => {
 
   const initDB = async () => {
     try {
-      pool = new Pool({
-        user:process.env.DB_USER,
-        host:process.env.DB_HOST,
-        port:process.env.DB_PORT,
-        password:process.env.DB_PASSWORD,
-        database:process.env.DB_DATABASE,
-        ssl: true
-      });
+      if(isProduction){
+        pool = new Pool({
+          user: process.env.DB_USER,
+          host: process.env.DB_HOST,
+          port: process.env.DB_PORT,
+          password: process.env.DB_PASSWORD,
+          database: process.env.DB_DATABASE,
+          ssl: true
+        });
+      }else{
+        pool = new Pool({
+          user: process.env.LOCAL_DB_USER,
+          host: process.env.LOCAL_DB_HOST,
+          port: process.env.LOCAL_DB_PORT,
+          password: process.env.LOCAL_DB_PASSWORD,
+          database: process.env.LOCAL_DB_DATABASE,
+          ssl: true
+        });
+      }
+
       const client = await pool.connect();
       return client;
     } catch (error) {
