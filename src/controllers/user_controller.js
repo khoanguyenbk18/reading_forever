@@ -5,9 +5,11 @@ import {validateRegisterRequest} from '../validators/member_validators';
 import {
   generateTokenAsync,
   hashPasswordAsync,
+  isMatchPassword,
   BEARER_AUTHENTICATION_SCHEMA
 } from '../lib/encrytion/encryption';
-export async function register(request, response, next) {
+
+export const register = async (request, response, next) => {
   try {
     const db = await dbConnection.get();
     let userRequestBody = request.body;
@@ -27,7 +29,7 @@ export async function register(request, response, next) {
 
     const idNewMember = await db.query(
       `INSERT INTO ${USERS_TABLE}
-      (username, password, avatar, email, gender, dob, role)
+      (username, hashed_password, avatar, email, gender, dob, role)
     VALUES ('${userRequestBody.username}',
     '${userRequestBody.hashed_password}',
     '${userRequestBody.avatar}',
@@ -48,16 +50,38 @@ export async function register(request, response, next) {
   } catch (error) {
     console.log(error);
   }
-}
+};
 
-export async function login(request, response, next) {
+export const login = async (request, response, next) => {
   try {
     const db = await dbConnection.get();
     const loginRequestBody = request.body;
-    console.log('TCL: loginRequestBody', loginRequestBody);
     const username = loginRequestBody.username;
-    const password = loginRequestBody.password;
+    console.log("TCL: login -> username", username)
 
-    const userLogin = await db.query();
-  } catch (error) {}
-}
+    const loginResult = await db.query(`
+    SELECT * FROM ${USERS_TABLE}
+    WHERE username = '${username}'
+    `);
+
+    if (loginResult.rows.length == 0) {
+      return response.status(HttpStatusCode.OK).send('There is not exist account');
+    } else {
+      //check password is corrent
+      const isMatch = await isMatchPassword(
+        loginRequestBody.password,
+        loginResult.rows[0].hashed_password
+      );
+      if (isMatch) {
+        const loginMember = loginResult.rows[0]
+        const encryptedToken = await generateTokenAsync(loginMember.id, loginMember);
+        loginMember.api_token = BEARER_AUTHENTICATION_SCHEMA + ' ' + encryptedToken;
+        return response.status(HttpStatusCode.OK).send(loginResult.rows);
+      } else {
+        return response.status(HttpStatusCode.OK).send('password is incorrect');
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};

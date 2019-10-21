@@ -1,30 +1,23 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 function Header({}) {
+  const linkHomePage = {pathname: '/'};
+  const linkRegisterPage = {pathname: '/register'};
   return (
     <header>
       {/* Header desktop */}
       <div className='wrap-menu-header gradient1 trans-0-4'>
         <div className='container h-full'>
           <div className='wrap_header trans-0-3'>
-            {/* Logo */}
-            {/* <div className='logo'>
-              <a href='index.html'>
-                <img
-                  src='images/icons/logo.png'
-                  alt='IMG-LOGO'
-                  data-logofixed='images/icons/logo2.png'
-                />
-              </a>
-            </div> */}
             {/* Menu */}
             <div className='wrap_menu p-l-45 p-l-0-xl'>
               <nav className='menu'>
                 <ul className='main_menu'>
                   <li>
-                    <a href='index.html'>Home</a>
+                    <Link to={linkHomePage}>Home</Link>
                   </li>
                   <li>
-                    <a href='menu.html'>Login</a>
+                    <Link to={linkRegisterPage}>Login</Link>
                   </li>
                   {/* <li>
                     <a href='reservation.html'>Reservation</a>

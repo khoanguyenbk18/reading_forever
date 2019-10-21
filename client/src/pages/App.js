@@ -8,6 +8,7 @@ import Header from '../components/header';
 import SideBar from '../components/sidebar';
 import Footer from '../components/footer'
 import Register from './register'
+import Login from './login'
 class App extends React.Component {
   render() {
     return (
@@ -18,6 +19,7 @@ class App extends React.Component {
         <Route exact path='/detail' component={PostDetail} />
         <Route exact path='/about' component={About} />
         <Route exact path='/register' component={Register} />
+        <Route exact path='/login' component={Login} />
         <Footer/>
       </Router>
     );
