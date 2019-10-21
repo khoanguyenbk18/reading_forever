@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import moment from 'moment';
 class PostDetail extends Component {
   constructor(props) {
     super(props);
@@ -14,6 +15,22 @@ class PostDetail extends Component {
       // console.log(this.state.post.post.author);
     });
   }
+
+  renderDateInMonth() {
+    const day = moment(this.state.post.created_date).daysInMonth();
+    return day;
+  }
+
+  renderMonthAndYear() {
+    const month = moment(this.state.post.created_date).format('MMM');
+    const year = moment(this.state.post.created_date).year();
+    return month + ', ' + year;
+  }
+
+  renderDate() {
+    const date = moment(this.state.post.created_date).format('MMM, DD YYYY');
+    return date;
+  }
   render() {
     return this.state.post ? (
       <div>
@@ -25,19 +42,6 @@ class PostDetail extends Component {
         </section>
         {/* Content page */}
         <section>
-          <div className='bread-crumb bo5-b p-t-17 p-b-17'>
-            <div className='container'>
-              <a href='index.html' className='txt27'>
-                Home
-              </a>
-              <span className='txt29 m-l-10 m-r-10'>/</span>
-              <a href='blog.html' className='txt27'>
-                Blog
-              </a>
-              <span className='txt29 m-l-10 m-r-10'>/</span>
-              <span className='txt29'>{this.state.post.title}</span>
-            </div>
-          </div>
           <div className='container'>
             <div className='row '>
               <div className='col-md-8 col-lg-9'>
@@ -46,82 +50,50 @@ class PostDetail extends Component {
                   <div className='blo4 p-b-63'>
                     {/* - */}
                     <div className='pic-blo4 hov-img-zoom bo-rad-10 pos-relative'>
-                      <a href='blog-detail.html'>
-                        <img src='images/blog-05.jpg' alt='IMG-BLOG' />
-                      </a>
+                      <img src='images/blog-05.jpg' alt='IMG-BLOG' />
                       <div className='date-blo4 flex-col-c-m'>
-                        <span className='txt30 m-b-4'>28</span>
-                        <span className='txt31'>Dec, 2018</span>
+                        <span className='txt30 m-b-4'>{this.renderDateInMonth()}</span>
+                        <span className='txt31'>{this.renderMonthAndYear()}</span>
                       </div>
                     </div>
                     {/* - */}
                     <div className='text-blo4 p-t-33'>
                       <h4 className='p-b-16'>
-                        <a href='blog-detail.html' className='tit9'>
-                          {this.state.post.title}
-                        </a>
+                        <span className='tit9'>
+                          {this.state.post.title} by {this.state.post.author}
+                        </span>
                       </h4>
                       <div className='txt32 flex-w p-b-24'>
                         <span>
-                          by Admin
+                          by {this.state.post.username}
                           <span className='m-r-6 m-l-4'>|</span>
                         </span>
                         <span>
-                          28 December, 2018
+                          {this.renderDate()}
                           <span className='m-r-6 m-l-4'>|</span>
                         </span>
                         <span>
                           Cooking, Food
                           <span className='m-r-6 m-l-4'>|</span>
                         </span>
-                        <span>8 Comments</span>
+                        <span>{this.state.post.views_count} Views</span>
                       </div>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus eget mi
-                        sem. Nulla facilisi. Sed ultricies eros a nibh tempus, in sodales mi
-                        vestibulum. Nullam quis dui ac nisl ultrices euismod et sit amet urna. Morbi
-                        semper sapien quis ex tempor, sit amet scelerisque eros rhoncus. Cras
-                        scelerisque auctor gravida. Nunc fermentum luctus rhoncus. Nulla vulputate
-                        fermentum convallis. In quis pellentesque tortor. Cras metus nibh, gravida
-                        vitae ante vel, finibus semper tellus. Nulla vel tincidunt magna. Morbi
-                        tempor velit lectus, eu commodo quam volutpat vitae.
-                      </p>
+                      <p>{this.state.post.content}</p>
                     </div>
                   </div>
                   {/* Leave a comment */}
                   <form className='leave-comment p-t-10'>
                     <h4 className='txt33 p-b-14'>Leave a Comment</h4>
-                    <p>Your email address will not be published. Required fields are marked *</p>
                     <textarea
                       className='bo-rad-10 size29 bo2 txt10 p-l-20 p-t-15 m-b-10 m-t-40'
                       name='commentent'
                       placeholder='Comment...'
                       defaultValue={''}
+                      onChange={evt => {
+                        console.log(evt.target.value);
+                      }}
+                      // value={}
                     />
-                    <div className='size30 bo2 bo-rad-10 m-t-3 m-b-20'>
-                      <input
-                        className='bo-rad-10 sizefull txt10 p-l-20'
-                        type='text'
-                        name='name'
-                        placeholder='Name *'
-                      />
-                    </div>
-                    <div className='size30 bo2 bo-rad-10 m-t-3 m-b-20'>
-                      <input
-                        className='bo-rad-10 sizefull txt10 p-l-20'
-                        type='text'
-                        name='email'
-                        placeholder='Email *'
-                      />
-                    </div>
-                    <div className='size30 bo2 bo-rad-10 m-t-3 m-b-30'>
-                      <input
-                        className='bo-rad-10 sizefull txt10 p-l-20'
-                        type='text'
-                        name='website'
-                        placeholder='Website'
-                      />
-                    </div>
                     {/* Button3 */}
                     <button type='submit' className='btn3 flex-c-m size31 txt11 trans-0-4'>
                       Post Comment

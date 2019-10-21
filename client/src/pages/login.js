@@ -17,7 +17,8 @@ class Login extends Component {
     console.log('TCL: Login -> login -> loginBody', loginBody);
     login(loginBody)
       .then(res => {
-        console.log('TCL: Login -> login -> res', res);
+        localStorage.setItem('user', JSON.stringify(res.data[0]));
+        this.props.history.push('/')
       })
       .catch(err => {
         console.log('TCL: Login -> login -> err', err);

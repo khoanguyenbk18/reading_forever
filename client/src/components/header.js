@@ -1,8 +1,45 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-function Header({}) {
+const Header = props => {
   const linkHomePage = {pathname: '/'};
   const linkRegisterPage = {pathname: '/register'};
+  const linkLoginPage = {pathname: '/login'};
+
+  const renderNav = () => {
+    if (localStorage.getItem('user')) {
+      return (
+        <ul className='main_menu'>
+          <li>
+            <Link to={linkHomePage}>Home</Link>
+          </li>
+          <li>
+            <Link
+              onClick={() => {
+                localStorage.removeItem('user');
+                // props.onLogout();
+              }}>
+              Logout
+            </Link>
+          </li>
+        </ul>
+      );
+    } else {
+      return (
+        <ul className='main_menu'>
+          <li>
+            <Link to={linkHomePage}>Home</Link>
+          </li>
+          <li>
+            <Link to={linkRegisterPage}>Register</Link>
+          </li>
+          <li>
+            <Link to={linkLoginPage}>Login</Link>
+          </li>
+        </ul>
+      );
+    }
+  };
+
   return (
     <header>
       {/* Header desktop */}
@@ -11,36 +48,12 @@ function Header({}) {
           <div className='wrap_header trans-0-3'>
             {/* Menu */}
             <div className='wrap_menu p-l-45 p-l-0-xl'>
-              <nav className='menu'>
-                <ul className='main_menu'>
-                  <li>
-                    <Link to={linkHomePage}>Home</Link>
-                  </li>
-                  <li>
-                    <Link to={linkRegisterPage}>Login</Link>
-                  </li>
-                  {/* <li>
-                    <a href='reservation.html'>Reservation</a>
-                  </li>
-                  <li>
-                    <a href='gallery.html'>Gallery</a>
-                  </li>
-                  <li>
-                    <a href='about.html'>About</a>
-                  </li>
-                  <li>
-                    <a href='blog.html'>Blog</a>
-                  </li>
-                  <li>
-                    <a href='contact.html'>Contact</a>
-                  </li> */}
-                </ul>
-              </nav>
+              <nav className='menu'>{renderNav()}</nav>
             </div>
           </div>
         </div>
       </div>
     </header>
   );
-}
+};
 export default Header;
