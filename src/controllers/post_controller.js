@@ -17,6 +17,10 @@ export async function getListPosts(request, response, next) {
     ORDER BY p.created_date DESC
     LIMIT ${PAGE_SIZE} OFFSET ${OFFSET}`);
 
+    const rowcountResult = await db.query(`
+    SELECT COUNT(*) FROM ${POSTS_TABLE}`);
+    const rowCount = rowcountResult.rows[0].count;
+
     result.rows.map(post => {
       if (post.hasOwnProperty('name')) {
         post.category_name = post.name;
@@ -24,8 +28,13 @@ export async function getListPosts(request, response, next) {
       }
       return post;
     });
+    let responseData = {
+      data: result.rows,
+      pageNumber: pageNumber,
+      totalPage: rowCount / PAGE_SIZE
+    };
 
-    return response.status(HttpStatusCode.OK).send(result.rows);
+    return response.status(HttpStatusCode.OK).send(responseData);
   } catch (error) {
     console.log(error);
   }

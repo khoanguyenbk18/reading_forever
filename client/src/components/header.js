@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 const Header = props => {
   const linkHomePage = {pathname: '/'};
   const linkRegisterPage = {pathname: '/register'};
@@ -16,7 +16,7 @@ const Header = props => {
             <Link
               onClick={() => {
                 localStorage.removeItem('user');
-                // props.onLogout();
+                props.history.push(linkHomePage);
               }}>
               Logout
             </Link>
@@ -56,4 +56,4 @@ const Header = props => {
     </header>
   );
 };
-export default Header;
+export default withRouter(Header);
