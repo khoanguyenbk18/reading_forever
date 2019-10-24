@@ -6,6 +6,7 @@ class PostDetail extends Component {
     this.state = {
       post: null
     };
+    this.postComment = this.postComment.bind(this);
   }
   componentDidMount() {
     const post = this.props.location.state.post;
@@ -31,6 +32,11 @@ class PostDetail extends Component {
     const date = moment(this.state.post.created_date).format('MMM, DD YYYY');
     return date;
   }
+
+  postComment() {
+    console.log('Post Comment here');
+  }
+
   render() {
     return this.state.post ? (
       <div>
@@ -38,7 +44,7 @@ class PostDetail extends Component {
         <section
           className='bg-title-page flex-c-m p-t-160 p-b-80 p-l-15 p-r-15'
           style={{backgroundImage: `url(${this.state.post.image})`}}>
-          <h2 className='tit6 t-center'>{this.state.post.author}</h2>
+          <h2 className='tit6'>{this.state.post.author}</h2>
         </section>
         {/* Content page */}
         <section>
@@ -91,7 +97,10 @@ class PostDetail extends Component {
                 // value={}
               />
               {/* Button3 */}
-              <button type='submit' className='btn3 flex-c-m size31 txt11 trans-0-4'>
+              <button
+                type='button'
+                onClick={this.postComment}
+                className='btn3 flex-c-m size31 txt11 trans-0-4'>
                 Post Comment
               </button>
             </form>

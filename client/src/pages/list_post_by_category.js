@@ -5,11 +5,12 @@ import {
   getListPost,
   getListCategories,
   getListMostPopular,
-  getSearchListPost
+  getSearchListPost,
+  getListPostByCategory
 } from '../urls/post_apis';
 import {Link} from 'react-router-dom';
 import moment from 'moment';
-class ListPost extends Component {
+class ListPostByCategory extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,7 +27,10 @@ class ListPost extends Component {
   }
 
   componentDidMount() {
-    getListPost(this.state.pageNumber)
+    console.log('category');
+    const category = this.props.location.state.category;
+    console.log('TCL: ListPostByCategory -> componentDidMount -> category', category);
+    getListPostByCategory(category.id)
       .then(res => {
         this.setState({listPosts: res.data}, () => {});
       })
@@ -34,11 +38,11 @@ class ListPost extends Component {
         console.log(error);
       });
 
-    getListCategories()
-      .then(res => {
-        this.setState({listCategories: res.data});
-      })
-      .catch(err => {});
+    // getListCategories()
+    //   .then(res => {
+    //     this.setState({listCategories: res.data});
+    //   })
+    //   .catch(err => {});
 
     getListMostPopular()
       .then(res => {
@@ -47,15 +51,15 @@ class ListPost extends Component {
       .catch(err => {});
   }
 
-  renderListCategories() {
-    if (this.state.listCategories) {
-      return this.state.listCategories.map((item, index) => {
-        return <Category key={index} category={item} />;
-      });
-    } else {
-      return null;
-    }
-  }
+  // renderListCategories() {
+  //   if (this.state.listCategories) {
+  //     return this.state.listCategories.map((item, index) => {
+  //       return <Category key={index} category={item} />;
+  //     });
+  //   } else {
+  //     return null;
+  //   }
+  // }
 
   renderListPost() {
     if (this.state.listPosts.data) {
@@ -184,11 +188,6 @@ class ListPost extends Component {
                       onClick={this.onSearchPost}
                     />
                   </div>
-                  {/* Categories */}
-                  <div className='categories'>
-                    <h4 className='txt33 bo5-b p-b-35 p-t-58'>Categories</h4>
-                    <ul>{this.renderListCategories()}</ul>
-                  </div>
                   {/* Most Popular */}
                   <div className='popular'>
                     <h4 className='txt33 p-b-35 p-t-58'>Most popular</h4>
@@ -203,4 +202,4 @@ class ListPost extends Component {
     );
   }
 }
-export default ListPost;
+export default ListPostByCategory;

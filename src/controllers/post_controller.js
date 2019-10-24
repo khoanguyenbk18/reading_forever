@@ -40,6 +40,38 @@ export async function getListPosts(request, response, next) {
   }
 }
 
+export async function getListPostsByCategory(request, response, next) {
+  try {
+    const categoryId = request.query.categoryId;
+    const db = await dbConnection.get();
+    const result = await db.query(
+      `
+    SELECT p.*, u.username , c.name
+    FROM ${POSTS_TABLE} p
+    INNER JOIN ${USERS_TABLE} u ON p.post_creator_id = u.id
+    INNER JOIN ${CATEGORIES_TABLE} c ON p.category = c.id
+    WHERE c.id = $1
+    ORDER BY p.created_date DESC`,
+      [categoryId]
+    );
+
+    result.rows.map(post => {
+      if (post.hasOwnProperty('name')) {
+        post.category_name = post.name;
+        delete post.name;
+      }
+      return post;
+    });
+    let responseData = {
+      data: result.rows
+    };
+
+    return response.status(HttpStatusCode.OK).send(responseData);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function getListCategories(request, response, next) {
   try {
     const db = await dbConnection.get();
@@ -84,15 +116,18 @@ export async function searchPosts(request, response, next) {
     let queryString = request.query.queryString;
     const db = await dbConnection.get();
     const LIMIT = 5;
-    const result = await db.query(`
+    const result = await db.query(
+      `
     SELECT p.*, u.username , c.name
     FROM ${POSTS_TABLE} p
     INNER JOIN ${USERS_TABLE} u ON p.post_creator_id = u.id
     INNER JOIN ${CATEGORIES_TABLE} c ON p.category = c.id
-    WHERE document_vectors @@ plainto_tsquery('${queryString}')
+    WHERE document_vectors @@ plainto_tsquery($1)
     ORDER BY p.views_count DESC
     LIMIT ${LIMIT}
-    `);
+    `,
+      [queryString]
+    );
 
     result.rows.map(post => {
       if (post.hasOwnProperty('document_vectors')) {

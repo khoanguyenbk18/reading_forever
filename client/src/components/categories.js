@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom';
 
 const Category = props => {
   const {category} = props;
-  const toCategoriesList = {pathname: '/register', state: {category}};
+  const toCategoriesList = {pathname: `/category/${category.name}`, state: {category}};
   return (
     <li className='bo5-b p-t-8 p-b-8'>
       <Link to={toCategoriesList} className='txt27'>

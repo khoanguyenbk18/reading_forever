@@ -10,136 +10,38 @@ function Footer({}) {
             <ul className='m-b-70'>
               <li className='txt14 m-b-14'>
                 <i className='fa fa-map-marker fs-16 dis-inline-block size19' aria-hidden='true' />
-                8th floor, 379 Hudson St, New York, NY 10018
+                268 Lý Thường Kiệt, Phường 14, Quận 10, Hồ Chí Minh
               </li>
               <li className='txt14 m-b-14'>
                 <i className='fa fa-phone fs-16 dis-inline-block size19' aria-hidden='true' />
-                (+1) 96 716 6879
+                (+84) 28 3864 7256
               </li>
               <li className='txt14 m-b-14'>
                 <i className='fa fa-envelope fs-13 dis-inline-block size19' aria-hidden='true' />
-                contact@site.com
+                http://www.hcmut.edu.vn
               </li>
             </ul>
             {/* - */}
             <h4 className='txt13 m-b-32'>Opening Times</h4>
             <ul>
-              <li className='txt14'>09:30 AM – 11:00 PM</li>
+              <li className='txt14'>06:00 AM – 21:00 PM</li>
               <li className='txt14'>Every Day</li>
             </ul>
           </div>
           <div className='col-sm-6 col-md-4 p-t-50'>
             {/* - */}
-            <h4 className='txt13 m-b-33'>Latest twitter</h4>
+            <h4 className='txt13 m-b-33'>Computer Science 2018</h4>
             <div className='m-b-25'>
               <span className='fs-13 color2 m-r-5'>
                 <i className='fa fa-twitter' aria-hidden='true' />
               </span>
               <a href='#' className='txt15'>
-                @colorlib
+                Group 06
               </a>
               <p className='txt14 m-b-18'>
-                Activello is a good option. It has a slider built into that displays the featured
-                image in the slider.
-                <a href='#' className='txt15'>
-                  https://buff.ly/2zaSfAQ
-                </a>
+                Reading Forever is a project of Software Engineering Practice Subject
               </p>
-              <span className='txt16'>21 Dec 2017</span>
-            </div>
-            <div>
-              <span className='fs-13 color2 m-r-5'>
-                <i className='fa fa-twitter' aria-hidden='true' />
-              </span>
-              <a href='#' className='txt15'>
-                @colorlib
-              </a>
-              <p className='txt14 m-b-18'>
-                Activello is a good option. It has a slider built into that displays
-                <a href='#' className='txt15'>
-                  https://buff.ly/2zaSfAQ
-                </a>
-              </p>
-              <span className='txt16'>21 Dec 2017</span>
-            </div>
-          </div>
-          <div className='col-sm-6 col-md-4 p-t-50'>
-            {/* - */}
-            <h4 className='txt13 m-b-38'>Gallery</h4>
-            {/* Gallery footer */}
-            <div className='wrap-gallery-footer flex-w'>
-              <a
-                className='item-gallery-footer wrap-pic-w'
-                href='images/photo-gallery-01.jpg'
-                data-lightbox='gallery-footer'>
-                <img src='images/photo-gallery-thumb-01.jpg' alt='GALLERY' />
-              </a>
-              <a
-                className='item-gallery-footer wrap-pic-w'
-                href='images/photo-gallery-02.jpg'
-                data-lightbox='gallery-footer'>
-                <img src='images/photo-gallery-thumb-02.jpg' alt='GALLERY' />
-              </a>
-              <a
-                className='item-gallery-footer wrap-pic-w'
-                href='images/photo-gallery-03.jpg'
-                data-lightbox='gallery-footer'>
-                <img src='images/photo-gallery-thumb-03.jpg' alt='GALLERY' />
-              </a>
-              <a
-                className='item-gallery-footer wrap-pic-w'
-                href='images/photo-gallery-04.jpg'
-                data-lightbox='gallery-footer'>
-                <img src='images/photo-gallery-thumb-04.jpg' alt='GALLERY' />
-              </a>
-              <a
-                className='item-gallery-footer wrap-pic-w'
-                href='images/photo-gallery-05.jpg'
-                data-lightbox='gallery-footer'>
-                <img src='images/photo-gallery-thumb-05.jpg' alt='GALLERY' />
-              </a>
-              <a
-                className='item-gallery-footer wrap-pic-w'
-                href='images/photo-gallery-06.jpg'
-                data-lightbox='gallery-footer'>
-                <img src='images/photo-gallery-thumb-06.jpg' alt='GALLERY' />
-              </a>
-              <a
-                className='item-gallery-footer wrap-pic-w'
-                href='images/photo-gallery-07.jpg'
-                data-lightbox='gallery-footer'>
-                <img src='images/photo-gallery-thumb-07.jpg' alt='GALLERY' />
-              </a>
-              <a
-                className='item-gallery-footer wrap-pic-w'
-                href='images/photo-gallery-08.jpg'
-                data-lightbox='gallery-footer'>
-                <img src='images/photo-gallery-thumb-08.jpg' alt='GALLERY' />
-              </a>
-              <a
-                className='item-gallery-footer wrap-pic-w'
-                href='images/photo-gallery-09.jpg'
-                data-lightbox='gallery-footer'>
-                <img src='images/photo-gallery-thumb-09.jpg' alt='GALLERY' />
-              </a>
-              <a
-                className='item-gallery-footer wrap-pic-w'
-                href='images/photo-gallery-10.jpg'
-                data-lightbox='gallery-footer'>
-                <img src='images/photo-gallery-thumb-10.jpg' alt='GALLERY' />
-              </a>
-              <a
-                className='item-gallery-footer wrap-pic-w'
-                href='images/photo-gallery-11.jpg'
-                data-lightbox='gallery-footer'>
-                <img src='images/photo-gallery-thumb-11.jpg' alt='GALLERY' />
-              </a>
-              <a
-                className='item-gallery-footer wrap-pic-w'
-                href='images/photo-gallery-12.jpg'
-                data-lightbox='gallery-footer'>
-                <img src='images/photo-gallery-thumb-12.jpg' alt='GALLERY' />
-              </a>
+              <span className='txt16'>24 Oct 2019</span>
             </div>
           </div>
         </div>
