@@ -1625,3 +1625,11 @@ body {padding-right: 0px !important;}
   border-radius: 10px;
   background-color: #ec1d25;
 }
+#Sign_pro > li > a {
+  font-family: Montserrat;
+  font-weight: 400;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: white;
+  padding: 15px;
+}

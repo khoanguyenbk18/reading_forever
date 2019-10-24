@@ -1,6 +1,7 @@
 import ItemPost from '../components/item_post';
 import React, {Component} from 'react';
 import {getListPost} from '../urls/post_apis';
+import axios from 'axios'
 class ListPost extends Component {
   constructor(props) {
     super(props);
@@ -9,10 +10,10 @@ class ListPost extends Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount() {//se chay khi moi vua mount trang web
     getListPost()
-      .then(res => {
-        this.setState({listPosts: res.data});
+      .then(res => { //res: cua server tra ve
+        this.setState({listPosts: res.data}); //luu data cua server xuong client thong qua bien listPosts
       })
       .catch(error => {
         console.log(error);
