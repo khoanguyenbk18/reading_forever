@@ -11,10 +11,11 @@ const dbConnection = () => {
 
   const initDB = async () => {
     try {
+      //Sua lai thong tin o day di
       pool = new Pool({
         user: 'postgres',
         host: 'localhost',
-        database: 'SampleDB',
+        database: 'CNPM',
         port: 5432,
         password: 'postgres'
       });
