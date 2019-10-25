@@ -13,7 +13,7 @@ export const register = async (request, response, next) => {
   try {
     const db = await dbConnection.get();
     let userRequestBody = request.body;
-
+    userRequestBody.username = userRequestBody.username.toLowerCase();
     //VALIDATE BODY
     const {errors, isValid} = validateRegisterRequest(userRequestBody);
     if (!isValid) {
@@ -25,17 +25,27 @@ export const register = async (request, response, next) => {
     const hashPassword = await hashPasswordAsync(userRequestBody.password);
     userRequestBody.hashed_password = hashPassword;
 
+    //FIND EXIST USERNAME
+    const findUserNameExist = await db.query(
+      `SELECT EXISTS
+      (SELECT 1 FROM ${USERS_TABLE} WHERE username=$1)`,
+      [userRequestBody.username]
+    );
+    console.log('TCL: register -> findUserNameExist', findUserNameExist);
+
+    if (findUserNameExist.rows[0].exists) {
+      return response.status(HttpStatusCode.BAD_REQUEST).send('This username already exist');
+    }
     console.log(userRequestBody);
 
     const idNewMember = await db.query(
       `INSERT INTO ${USERS_TABLE}
-      (username, hashed_password, avatar, email, gender, dob, role)
+      (username, hashed_password, avatar, email, gender, role)
     VALUES ('${userRequestBody.username}',
     '${userRequestBody.hashed_password}',
     '${userRequestBody.avatar}',
     '${userRequestBody.email}',
     '${userRequestBody.gender}',
-    '${userRequestBody.dob}',
     ${userRequestBody.role}) RETURNING ${USERS_TABLE}.id;`
     );
 
@@ -43,6 +53,10 @@ export const register = async (request, response, next) => {
       id: idNewMember.rows.id,
       ...userRequestBody
     };
+
+    if (registedMember.hasOwnProperty('hashed_password')) {
+      delete registedMember.hashed_password;
+    }
 
     const encryptedToken = await generateTokenAsync(registedMember.id, registedMember);
     registedMember.api_token = BEARER_AUTHENTICATION_SCHEMA + ' ' + encryptedToken;
@@ -57,7 +71,7 @@ export const login = async (request, response, next) => {
     const db = await dbConnection.get();
     const loginRequestBody = request.body;
     const username = loginRequestBody.username;
-    console.log("TCL: login -> username", username)
+    console.log('TCL: login -> username', username);
 
     const loginResult = await db.query(`
     SELECT * FROM ${USERS_TABLE}
@@ -65,7 +79,7 @@ export const login = async (request, response, next) => {
     `);
 
     if (loginResult.rows.length == 0) {
-      return response.status(HttpStatusCode.OK).send('There is not exist account');
+      return response.status(HttpStatusCode.BAD_REQUEST).send('There is not exist account');
     } else {
       //check password is corrent
       const isMatch = await isMatchPassword(
@@ -73,12 +87,12 @@ export const login = async (request, response, next) => {
         loginResult.rows[0].hashed_password
       );
       if (isMatch) {
-        const loginMember = loginResult.rows[0]
+        const loginMember = loginResult.rows[0];
         const encryptedToken = await generateTokenAsync(loginMember.id, loginMember);
         loginMember.api_token = BEARER_AUTHENTICATION_SCHEMA + ' ' + encryptedToken;
         return response.status(HttpStatusCode.OK).send(loginResult.rows);
       } else {
-        return response.status(HttpStatusCode.OK).send('password is incorrect');
+        return response.status(HttpStatusCode.BAD_REQUEST).send('password is incorrect');
       }
     }
   } catch (error) {
