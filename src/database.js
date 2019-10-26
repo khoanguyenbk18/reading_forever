@@ -1,10 +1,14 @@
 import {Pool} from 'pg';
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 export const USERS_TABLE = 'users';
 export const POSTS_TABLE = 'posts';
 export const COMMENT_TABLE = 'comments';
 export const CATEGORIES_TABLE = 'categories';
 
+const isProduction = false;
 
 //Singleton
 const dbConnection = () => {
@@ -12,14 +16,26 @@ const dbConnection = () => {
 
   const initDB = async () => {
     try {
-      //Sua lai thong tin o day di
-      pool = new Pool({
-        user: 'postgres',
-        host: 'localhost',
-        database: 'CNPM',
-        port: 5432,
-        password: 'postgres'
-      });
+      if(isProduction){
+        pool = new Pool({
+          user: process.env.DB_USER,
+          host: process.env.DB_HOST,
+          port: process.env.DB_PORT,
+          password: process.env.DB_PASSWORD,
+          database: process.env.DB_DATABASE,
+          ssl: true
+        });
+      }else{
+        pool = new Pool({
+          user: process.env.LOCAL_DB_USER,
+          host: process.env.LOCAL_DB_HOST,
+          port: process.env.LOCAL_DB_PORT,
+          password: process.env.LOCAL_DB_PASSWORD,
+          database: process.env.LOCAL_DB_DATABASE,
+          ssl: false
+        });
+      }
+
       const client = await pool.connect();
       return client;
     } catch (error) {

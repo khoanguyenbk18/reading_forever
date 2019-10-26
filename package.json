@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "engines": {
+    "node": "11.x"
+  },
   "scripts": {
     "clean": "rimraf build && mkdir build",
     "build-babel": "babel -d ./build ./src -s",
@@ -22,6 +25,7 @@
     "@babel/plugin-transform-runtime": "^7.4.4",
     "@babel/preset-env": "^7.6.0",
     "@babel/register": "^7.6.0",
+    "dotenv": "^8.1.0",
     "nodemon": "^1.19.1",
     "rimraf": "^2.6.3"
   },
@@ -33,7 +37,6 @@
     "compression": "^1.7.4",
     "concurrently": "^4.1.2",
     "cors": "^2.8.5",
-    "dotenv": "^8.0.0",
     "express": "^4.16.3",
     "express-basic-auth": "^1.2.0",
     "hashids": "^1.2.2",
