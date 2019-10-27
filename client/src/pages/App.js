@@ -10,6 +10,7 @@ import SideBar from '../components/sidebar';
 import Footer from '../components/footer';
 import Register from './register';
 import Login from './login';
+import Dashboard from './dashboard';
 
 class App extends React.Component {
   constructor(props) {
@@ -30,6 +31,7 @@ class App extends React.Component {
         <Route exact path='/about' component={About} />
         <Route exact path='/register' component={Register} />
         <Route exact path='/login' component={Login} />
+        <Route exact path='/dashboard' component={Dashboard} />
         <Footer />
       </BrowserRouter>
     );
