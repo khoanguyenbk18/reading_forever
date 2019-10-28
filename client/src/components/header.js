@@ -1,5 +1,6 @@
 import React from 'react';
 import {Link, withRouter} from 'react-router-dom';
+import {Path} from '../libs/path';
 const Header = props => {
   const linkHomePage = {pathname: '/'};
   const linkRegisterPage = {pathname: '/register'};
@@ -39,7 +40,8 @@ const Header = props => {
       );
     }
   };
-
+  //hide header in dashboard
+  if (props.history.location.pathname === Path.Dashboard) return null;
   return (
     <header>
       {/* Header desktop */}

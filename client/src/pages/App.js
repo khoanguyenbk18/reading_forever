@@ -11,30 +11,28 @@ import Footer from '../components/footer';
 import Register from './register';
 import Login from './login';
 import Dashboard from './dashboard';
-
+import {Path} from '../libs/path';
 class App extends React.Component {
   constructor(props) {
     super(props);
   }
+
   render() {
     return (
       <BrowserRouter>
-        <Header
-          onLogout={() => {
-            // this.props.history.push('/');
-          }}
-        />
+        <Header listPageHide={['/dashboard']} />
         <SideBar />
-        <Route exact path='/' component={ListPost} />
-        <Route exact path='/category/:categoryName' component={ListPostByCategory} />
-        <Route exact path='/detail' component={PostDetail} />
-        <Route exact path='/about' component={About} />
-        <Route exact path='/register' component={Register} />
-        <Route exact path='/login' component={Login} />
-        <Route exact path='/dashboard' component={Dashboard} />
+        <Route exact path={Path.LandingPage} component={ListPost} />
+        <Route exact path={Path.CategoryPage} component={ListPostByCategory} />
+        <Route exact path={Path.Detail} component={PostDetail} />
+        <Route exact path={Path.About} component={About} />
+        <Route exact path={Path.Register} component={Register} />
+        <Route exact path={Path.Login} component={Login} />
+        <Route exact path={Path.Dashboard} component={Dashboard} />
         <Footer />
       </BrowserRouter>
     );
   }
 }
+
 export default App;
