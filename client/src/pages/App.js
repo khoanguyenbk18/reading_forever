@@ -11,6 +11,7 @@ import Footer from '../components/footer';
 import Register from './register';
 import Login from './login';
 import Dashboard from './dashboard';
+import UserProfile from './user_profile';
 import {Path} from '../libs/path';
 class App extends React.Component {
   constructor(props) {
@@ -29,6 +30,7 @@ class App extends React.Component {
         <Route exact path={Path.Register} component={Register} />
         <Route exact path={Path.Login} component={Login} />
         <Route exact path={Path.Dashboard} component={Dashboard} />
+        <Route exact path={Path.UserProfle} component={UserProfile} />
         <Footer />
       </BrowserRouter>
     );

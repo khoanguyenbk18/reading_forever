@@ -1,10 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-export const BEARER_AUTHENTICATION_SCHEMA = 'Bearer';
-const SALT_ROUNDS = 10;
-const SECRET_JWT_KEY = 'Re@dingF0rever';
-const SERVER_ISSUE = 'Re@dingF0rever.com';
-
+import {SECRET_JWT_KEY, SALT_ROUNDS, SERVER_ISSUE} from '../constants/system_config';
 export const generateTokenAsync = async (id, memObj = {}) => {
   try {
     const encodedMemberObj = {
