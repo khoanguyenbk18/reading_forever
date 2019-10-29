@@ -9,6 +9,7 @@ class PostDetail extends Component {
     this.postComment = this.postComment.bind(this);
   }
   componentDidMount() {
+    window.scrollTo(0, 0);
     const post = this.props.location.state.post;
     console.log('TCL: PostDetail -> componentDidMount -> post', post);
     this.setState({post: post}, () => {

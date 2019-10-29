@@ -1,104 +1,102 @@
 import React, {Component} from 'react';
-
+import {RoleEnum} from '../libs/enum';
+import {Link} from 'react-router-dom';
+import {Path} from '../libs/path';
 class UserProfile extends Component {
-  render() {
-    return (
-      <div>
-        <header className='header_area'>
-          <div className='main_menu'>
-            <nav className='navbar navbar-expand-lg navbar-light'>
-              <div className='container box_1620'>
-                {/* Brand and toggle get grouped for better mobile display */}
-                <a className='navbar-brand logo_h' href='index.html'>
-                  <img src='images/logo.png' alt />
-                </a>
-                <button
-                  className='navbar-toggler'
-                  type='button'
-                  data-toggle='collapse'
-                  data-target='#navbarSupportedContent'
-                  aria-controls='navbarSupportedContent'
-                  aria-expanded='false'
-                  aria-label='Toggle navigation'>
-                  <span className='icon-bar' />
-                  <span className='icon-bar' />
-                  <span className='icon-bar' />
-                </button>
-                {/* Collect the nav links, forms, and other content for toggling */}
-                <div className='collapse navbar-collapse offset' id='navbarSupportedContent'>
-                  <ul className='nav navbar-nav menu_nav ml-auto'>
-                    <li className='nav-item active'>
-                      <a className='nav-link' href='index.html'>
-                        Home
-                      </a>
-                    </li>
-                    <li className='nav-item'>
-                      <a className='nav-link' href='about-us.html'>
-                        About
-                      </a>
-                    </li>
-                    <li className='nav-item'>
-                      <a className='nav-link' href='services.html'>
-                        Services
-                      </a>
-                    </li>
-                    <li className='nav-item submenu dropdown'>
-                      <a
-                        href='#'
-                        className='nav-link dropdown-toggle'
-                        data-toggle='dropdown'
-                        role='button'
-                        aria-haspopup='true'
-                        aria-expanded='false'>
-                        Pages
-                      </a>
-                      <ul className='dropdown-menu'>
-                        <li className='nav-item'>
-                          <a className='nav-link' href='portfolio.html'>
-                            Portfolio
-                          </a>
-                        </li>
-                        <li className='nav-item'>
-                          <a className='nav-link' href='elements.html'>
-                            Elements
-                          </a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li className='nav-item submenu dropdown'>
-                      <a
-                        href='#'
-                        className='nav-link dropdown-toggle'
-                        data-toggle='dropdown'
-                        role='button'
-                        aria-haspopup='true'
-                        aria-expanded='false'>
-                        Blog
-                      </a>
-                      <ul className='dropdown-menu'>
-                        <li className='nav-item'>
-                          <a className='nav-link' href='blog.html'>
-                            Blog
-                          </a>
-                        </li>
-                        <li className='nav-item'>
-                          <a className='nav-link' href='single-blog.html'>
-                            Blog Details
-                          </a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li className='nav-item'>
-                      <a className='nav-link' href='contact.html'>
-                        Contact
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </nav>
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: {
+        id: 16,
+        username: 'imokesf',
+        avatar: 'http://dummyimage.com/123x234.bmp/cc0000/ffffff',
+        email: 'talmeidaf@google.pl',
+        gender: 'Female',
+        dob: '2019-04-15T17:00:00.000Z',
+        role: 2,
+        post_ids: [848],
+        detail_posts: [
+          {
+            id: 848,
+            title: 'Northwest Passage',
+            image: 'https://picsum.photos/id/848/400/600',
+            author: 'Ali Varney',
+            publish_date: '2019-02-07',
+            category: 11,
+            content:
+              'In hac habitasse platea dictumst. Morbi vestibulum, velit id pretium iaculis, diam erat fermentum justo, nec condimentum neque sapien placerat ante. Nulla justo.\n\nAliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis.',
+            comment_ids: 439,
+            views_count: 8011,
+            status: 1,
+            post_creator_id: 572,
+            created_date: '2019-02-05',
+            document_vectors:
+              "'accumsan':40 'ali':3 'aliquam':28 'amet':37 'ant':25 'condimentum':21 'diam':16 'dictumst':9 'eget':31 'elit':32 'erat':17 'ero':38 'fermentum':18 'habitass':7 'hac':6 'iaculi':15 'id':13 'justo':19,27 'mauri':35 'morbi':10 'nec':20 'nequ':22 'northwest':1 'nulla':26 'passag':2 'placerat':24 'platea':8 'pretium':14 'qui':29,42 'sapien':23 'scelerisqu':34 'sit':36 'sodal':33 'suspendiss':39 'tortor':41 'turpi':30,43 'varney':4 'velit':12 'vestibulum':11"
+          }
+        ],
+        detail_notifications: [
+          {
+            id: 983,
+            message:
+              'Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy. Integer non velit.\n\nDonec diam neque, vestibulum eget, vulputate ut, ultrices vel, augue. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec pharetra, magna vestibulum aliquet ultrices, erat tortor sollicitudin mi, sit amet lobortis sapien sapien non mi. Integer ac neque.',
+            user_id: 16,
+            post_id: 120
+          }
+        ]
+      }
+    };
+    this.renderRole = this.renderRole.bind(this);
+    this.renderListPosts = this.renderListPosts.bind(this);
+    this.renderListNotifications = this.renderListNotifications.bind(this);
+  }
+
+  componentDidMount() {
+    window.scrollTo(0, 0);
+  }
+
+  renderRole() {
+    return Object.keys(RoleEnum)[this.state.user.role];
+  }
+
+  renderListPosts() {
+    return this.state.user.detail_posts.map((item, index) => {
+      console.log('TCL: UserProfile -> renderListPosts -> item', item);
+      const linkPostDetail = {pathname: Path.Detail, state: {post: item}};
+      return (
+        <div className='col-lg-4 col-md-4 col-sm-6 brand manipul design print' key={index}>
+          <div className='h_gallery_item'>
+            <div className='g_img_item'>
+              <img className='img-fluid' src={item.image} alt />
+              <Link className='light' to={linkPostDetail}>
+                <img src='images/gallery/icon.png' alt />
+              </Link>
+            </div>
+            <div className='g_item_text'>
+              <h4>{item.title}</h4>
+              <p>{item.author}</p>
+            </div>
           </div>
-        </header>
+        </div>
+      );
+    });
+  }
+
+  renderListNotifications() {
+    return this.state.user.detail_notifications.map((item, index) => {
+      return (
+        <div className='item' key={index}>
+          <div className='testi_item'>
+            <p>{item.message}</p>
+            <h4>Admin</h4>
+          </div>
+        </div>
+      );
+    });
+  }
+
+  render() {
+    return this.state.user ? (
+      <div>
         {/*================Header Menu Area =================*/}
         {/*================Home Banner Area =================*/}
         <section className='home_banner_area'>
@@ -112,49 +110,16 @@ class UserProfile extends Component {
                   <div className='media-body'>
                     <div className='personal_text'>
                       <h6>Hello Everybody, i am</h6>
-                      <h3>Donald McKinney</h3>
-                      <h4>Junior UI/UX Developer</h4>
-                      <p>
-                        You will begin to realise why this exercise is called the Dickens Pattern
-                        (with reference to the ghost showing Scrooge some different futures)
-                      </p>
+                      <h3>{this.state.user.username}</h3>
+                      <h4>{this.renderRole()}</h4>
                       <ul className='list basic_info'>
                         <li>
-                          <a href='#'>
-                            <i className='lnr lnr-calendar-full' /> 31st December, 1992
-                          </a>
+                          <i className='lnr lnr-calendar-full' />
+                          Email: {this.state.user.email}
                         </li>
                         <li>
-                          <a href='#'>
-                            <i className='lnr lnr-phone-handset' /> 44 (012) 6954 783
-                          </a>
-                        </li>
-                        <li>
-                          <a href='#'>
-                            <i className='lnr lnr-envelope' /> businessplan@donald
-                          </a>
-                        </li>
-                        <li>
-                          <a href='#'>
-                            <i className='lnr lnr-home' /> Santa monica bullevard
-                          </a>
-                        </li>
-                      </ul>
-                      <ul className='list personal_social'>
-                        <li>
-                          <a href='#'>
-                            <i className='fa fa-facebook' />
-                          </a>
-                        </li>
-                        <li>
-                          <a href='#'>
-                            <i className='fa fa-twitter' />
-                          </a>
-                        </li>
-                        <li>
-                          <a href='#'>
-                            <i className='fa fa-linkedin' />
-                          </a>
+                          <i className='lnr lnr-phone-handset' />
+                          Gender: {this.state.user.gender}
                         </li>
                       </ul>
                     </div>
@@ -166,7 +131,7 @@ class UserProfile extends Component {
         </section>
         {/*================End Home Banner Area =================*/}
         {/*================Welcome Area =================*/}
-        <section className='welcome_area p_120'>
+        {/* <section className='welcome_area p_120'>
           <div className='container'>
             <div className='row welcome_inner'>
               <div className='col-lg-6'>
@@ -291,10 +256,10 @@ class UserProfile extends Component {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
         {/*================End Welcome Area =================*/}
         {/*================My Tabs Area =================*/}
-        <section className='mytabs_area p_120'>
+        {/* <section className='mytabs_area p_120'>
           <div className='container'>
             <div className='tabs_inner'>
               <ul className='nav nav-tabs' id='myTab' role='tablist'>
@@ -433,10 +398,10 @@ class UserProfile extends Component {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
         {/*================End My Tabs Area =================*/}
         {/*================Feature Area =================*/}
-        <section className='feature_area p_120'>
+        {/* <section className='feature_area p_120'>
           <div className='container'>
             <div className='main_title'>
               <h2>offerings to my clients</h2>
@@ -478,127 +443,18 @@ class UserProfile extends Component {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
         {/*================End Feature Area =================*/}
         {/*================Home Gallery Area =================*/}
         <section className='home_gallery_area p_120'>
           <div className='container'>
             <div className='main_title'>
-              <h2>Our Latest Featured Projects</h2>
-              <p>Who are in extremely love with eco friendly system.</p>
-            </div>
-            <div className='isotope_fillter'>
-              <ul className='gallery_filter list'>
-                <li className='active' data-filter='*'>
-                  <a href='#'>All</a>
-                </li>
-                <li data-filter='.brand'>
-                  <a href='#'>Vector</a>
-                </li>
-                <li data-filter='.manipul'>
-                  <a href='#'>Raster</a>
-                </li>
-                <li data-filter='.creative'>
-                  <a href='#'>UI/UX</a>
-                </li>
-                <li data-filter='.design'>
-                  <a href='#'>Printing</a>
-                </li>
-              </ul>
+              <h2>My Latest Posts</h2>
+              <p>Together We Share, Together We Develope.</p>
             </div>
           </div>
           <div className='container'>
-            <div className='gallery_f_inner row imageGallery1'>
-              <div className='col-lg-4 col-md-4 col-sm-6 brand manipul design print'>
-                <div className='h_gallery_item'>
-                  <div className='g_img_item'>
-                    <img className='img-fluid' src='images/gallery/project-1.jpg' alt />
-                    <a className='light' href='images/gallery/project-1.jpg'>
-                      <img src='images/gallery/icon.png' alt />
-                    </a>
-                  </div>
-                  <div className='g_item_text'>
-                    <h4>3D Helmet Design</h4>
-                    <p>Client Project</p>
-                  </div>
-                </div>
-              </div>
-              <div className='col-lg-4 col-md-4 col-sm-6 brand manipul creative'>
-                <div className='h_gallery_item'>
-                  <div className='g_img_item'>
-                    <img className='img-fluid' src='images/gallery/project-2.jpg' alt />
-                    <a className='light' href='images/gallery/project-2.jpg'>
-                      <img src='images/gallery/icon.png' alt />
-                    </a>
-                  </div>
-                  <div className='g_item_text'>
-                    <h4>2D Vinyl Design</h4>
-                    <p>Client Project</p>
-                  </div>
-                </div>
-              </div>
-              <div className='col-lg-4 col-md-4 col-sm-6 manipul creative design print'>
-                <div className='h_gallery_item'>
-                  <div className='g_img_item'>
-                    <img className='img-fluid' src='images/gallery/project-3.jpg' alt />
-                    <a className='light' href='images/gallery/project-3.jpg'>
-                      <img src='images/gallery/icon.png' alt />
-                    </a>
-                  </div>
-                  <div className='g_item_text'>
-                    <h4>Creative Poster Design</h4>
-                    <p>Client Project</p>
-                  </div>
-                </div>
-              </div>
-              <div className='col-lg-4 col-md-4 col-sm-6 brand creative print'>
-                <div className='h_gallery_item'>
-                  <div className='g_img_item'>
-                    <img className='img-fluid' src='images/gallery/project-4.jpg' alt />
-                    <a className='light' href='images/gallery/project-4.jpg'>
-                      <img src='images/gallery/icon.png' alt />
-                    </a>
-                  </div>
-                  <div className='g_item_text'>
-                    <h4>Embosed Logo Design</h4>
-                    <p>Client Project</p>
-                  </div>
-                </div>
-              </div>
-              <div className='col-lg-4 col-md-4 col-sm-6 brand manipul design'>
-                <div className='h_gallery_item'>
-                  <div className='g_img_item'>
-                    <img className='img-fluid' src='images/gallery/project-5.jpg' alt />
-                    <a className='light' href='images/gallery/project-5.jpg'>
-                      <img src='images/gallery/icon.png' alt />
-                    </a>
-                  </div>
-                  <div className='g_item_text'>
-                    <h4>3D Disposable Bottle</h4>
-                    <p>Client Project</p>
-                  </div>
-                </div>
-              </div>
-              <div className='col-lg-4 col-md-4 col-sm-6 brand creative'>
-                <div className='h_gallery_item'>
-                  <div className='g_img_item'>
-                    <img className='img-fluid' src='images/gallery/project-6.jpg' alt />
-                    <a className='light' href='images/gallery/project-6.jpg'>
-                      <img src='images/gallery/icon.png' alt />
-                    </a>
-                  </div>
-                  <div className='g_item_text'>
-                    <h4>3D Logo Design</h4>
-                    <p>Client Project</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className='more_btn'>
-              <a className='main_btn' href='#'>
-                Load More Items
-              </a>
-            </div>
+            <div className='gallery_f_inner row imageGallery1'>{this.renderListPosts()}</div>
           </div>
         </section>
         {/*================End Home Gallery Area =================*/}
@@ -606,180 +462,17 @@ class UserProfile extends Component {
         <section className='testimonials_area p_120'>
           <div className='container'>
             <div className='main_title'>
-              <h2>Testimonials</h2>
-              <p>
-                If you are looking at blank cassettes on the web, you may be very confused at the
-                difference in price. You may see some for as low as $.17 each.
-              </p>
+              <h2>Notifications</h2>
+              <p>The Information about your pending Post will show here</p>
             </div>
             <div className='testi_inner'>
-              <div className='testi_slider owl-carousel'>
-                <div className='item'>
-                  <div className='testi_item'>
-                    <p>
-                      As conscious traveling Paup ers we must always be oncerned about our dear
-                      Mother Earth. If you think about it, you travel across her face
-                    </p>
-                    <h4>Fanny Spencer</h4>
-                    <a href='#'>
-                      <i className='fa fa-star' />
-                    </a>
-                    <a href='#'>
-                      <i className='fa fa-star' />
-                    </a>
-                    <a href='#'>
-                      <i className='fa fa-star' />
-                    </a>
-                    <a href='#'>
-                      <i className='fa fa-star' />
-                    </a>
-                    <a href='#'>
-                      <i className='fa fa-star-half-o' />
-                    </a>
-                  </div>
-                </div>
-                <div className='item'>
-                  <div className='testi_item'>
-                    <p>
-                      As conscious traveling Paup ers we must always be oncerned about our dear
-                      Mother Earth. If you think about it, you travel across her face
-                    </p>
-                    <h4>Fanny Spencer</h4>
-                    <a href='#'>
-                      <i className='fa fa-star' />
-                    </a>
-                    <a href='#'>
-                      <i className='fa fa-star' />
-                    </a>
-                    <a href='#'>
-                      <i className='fa fa-star' />
-                    </a>
-                    <a href='#'>
-                      <i className='fa fa-star' />
-                    </a>
-                    <a href='#'>
-                      <i className='fa fa-star-half-o' />
-                    </a>
-                  </div>
-                </div>
-                <div className='item'>
-                  <div className='testi_item'>
-                    <p>
-                      As conscious traveling Paup ers we must always be oncerned about our dear
-                      Mother Earth. If you think about it, you travel across her face
-                    </p>
-                    <h4>Fanny Spencer</h4>
-                    <a href='#'>
-                      <i className='fa fa-star' />
-                    </a>
-                    <a href='#'>
-                      <i className='fa fa-star' />
-                    </a>
-                    <a href='#'>
-                      <i className='fa fa-star' />
-                    </a>
-                    <a href='#'>
-                      <i className='fa fa-star' />
-                    </a>
-                    <a href='#'>
-                      <i className='fa fa-star-half-o' />
-                    </a>
-                  </div>
-                </div>
-              </div>
+              <div className='testi_slider owl-carousel'>{this.renderListNotifications()}</div>
             </div>
           </div>
         </section>
         {/*================End Testimonials Area =================*/}
-        {/*================Footer Area =================*/}
-        <footer className='footer_area p_120'>
-          <div className='container'>
-            <div className='row footer_inner'>
-              <div className='col-lg-5 col-sm-6'>
-                <aside className='f_widget ab_widget'>
-                  <div className='f_title'>
-                    <h3>About Me</h3>
-                  </div>
-                  <p>
-                    Do you want to be even more successful? Learn to love learning and growth. The
-                    more effort you put into improving your skills,
-                  </p>
-                  <p>
-                    {/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
-                    Copyright © All rights reserved | This template is made with{' '}
-                    <i className='fa fa-heart-o' aria-hidden='true' /> by{' '}
-                    <a href='https://colorlib.com' target='_blank'>
-                      Colorlib
-                    </a>
-                    {/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
-                  </p>
-                </aside>
-              </div>
-              <div className='col-lg-5 col-sm-6'>
-                <aside className='f_widget news_widget'>
-                  <div className='f_title'>
-                    <h3>Newsletter</h3>
-                  </div>
-                  <p>Stay updated with our latest trends</p>
-                  <div id='mc_embed_signup'>
-                    <form
-                      target='_blank'
-                      action='https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&id=92a4423d01'
-                      method='get'
-                      className='subscribe_form relative'>
-                      <div className='input-group d-flex flex-row'>
-                        <input
-                          name='EMAIL'
-                          placeholder='Enter email address'
-                          onfocus="this.placeholder = ''"
-                          onblur="this.placeholder = 'Email Address '"
-                          required
-                          type='email'
-                        />
-                        <button className='btn sub-btn'>
-                          <span className='lnr lnr-arrow-right' />
-                        </button>
-                      </div>
-                      <div className='mt-10 info' />
-                    </form>
-                  </div>
-                </aside>
-              </div>
-              <div className='col-lg-2'>
-                <aside className='f_widget social_widget'>
-                  <div className='f_title'>
-                    <h3>Follow Me</h3>
-                  </div>
-                  <p>Let us be social</p>
-                  <ul className='list'>
-                    <li>
-                      <a href='#'>
-                        <i className='fa fa-facebook' />
-                      </a>
-                    </li>
-                    <li>
-                      <a href='#'>
-                        <i className='fa fa-twitter' />
-                      </a>
-                    </li>
-                    <li>
-                      <a href='#'>
-                        <i className='fa fa-dribbble' />
-                      </a>
-                    </li>
-                    <li>
-                      <a href='#'>
-                        <i className='fa fa-behance' />
-                      </a>
-                    </li>
-                  </ul>
-                </aside>
-              </div>
-            </div>
-          </div>
-        </footer>
       </div>
-    );
+    ) : null;
   }
 }
 

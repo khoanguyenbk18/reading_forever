@@ -13,6 +13,9 @@ import Login from './login';
 import Dashboard from './dashboard';
 import UserProfile from './user_profile';
 import {Path} from '../libs/path';
+import ScrollToTop from '../components/scroll_to_top';
+import AdminRoute from '../components/admin_route';
+import PrivateRoute from '../components/private_route';
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -21,16 +24,17 @@ class App extends React.Component {
   render() {
     return (
       <BrowserRouter>
+        <ScrollToTop />
         <Header listPageHide={['/dashboard']} />
         <SideBar />
         <Route exact path={Path.LandingPage} component={ListPost} />
-        <Route exact path={Path.CategoryPage} component={ListPostByCategory} />
-        <Route exact path={Path.Detail} component={PostDetail} />
-        <Route exact path={Path.About} component={About} />
-        <Route exact path={Path.Register} component={Register} />
-        <Route exact path={Path.Login} component={Login} />
-        <Route exact path={Path.Dashboard} component={Dashboard} />
-        <Route exact path={Path.UserProfle} component={UserProfile} />
+        <Route path={Path.CategoryPage} component={ListPostByCategory} />
+        <Route path={Path.Detail} component={PostDetail} />
+        <Route path={Path.About} component={About} />
+        <Route path={Path.Register} component={Register} />
+        <Route path={Path.Login} component={Login} />
+        <PrivateRoute path={Path.UserProfle} component={UserProfile} />
+        <AdminRoute component={Dashboard} path={Path.Dashboard} />
         <Footer />
       </BrowserRouter>
     );

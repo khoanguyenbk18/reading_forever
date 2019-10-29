@@ -112,7 +112,8 @@ export const getUserProfile = async (request, response, next) => {
       WHERE ${USERS_TABLE}.id = $1
       GROUP BY ${USERS_TABLE}.id;
     `,
-      [userId]
+    [16]
+      // [userId]
     );
 
     if (loginResult.rows[0]) {

@@ -2,10 +2,11 @@ import React from 'react';
 import {Link, withRouter} from 'react-router-dom';
 import {Path} from '../libs/path';
 const Header = props => {
-  const linkHomePage = {pathname: '/'};
-  const linkRegisterPage = {pathname: '/register'};
-  const linkLoginPage = {pathname: '/login'};
-  const linkCreatePostPage = {pathname: '/createPost'};
+  const linkHomePage = {pathname: Path.LandingPage};
+  const linkRegisterPage = {pathname: Path.Register};
+  const linkLoginPage = {pathname: Path.Login};
+  const linkCreatePostPage = {pathname: Path.CreatePost};
+  const linkUserProfile = {pathname: Path.UserProfle};
   const renderNav = () => {
     const HomeButton = (
       <li>
@@ -31,11 +32,18 @@ const Header = props => {
         </li>
       );
 
+      const Profile = (
+        <li>
+          <Link to={linkUserProfile}>Profile</Link>
+        </li>
+      );
+
       return (
         <ul className='main_menu'>
           {HomeButton}
           {LogoutButton}
           {CreatePost}
+          {Profile}
         </ul>
       );
     } else {
