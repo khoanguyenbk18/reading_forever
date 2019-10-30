@@ -2,11 +2,11 @@ import React, {Component} from 'react';
 import moment from 'moment';
 import firebase from 'firebase';
 import FileUploader from 'react-firebase-file-uploader';
-import ImageUploader from 'react-images-upload';
 class CreatePost extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      listCategories: [],
       post: {
         id: 848,
         title: 'Northwest Passage',
@@ -35,10 +35,14 @@ class CreatePost extends Component {
     this.onChangeHandler = this.onChangeHandler.bind(this);
     // this.onDrop = this.onDrop.bind(this);
     this.renderLocalImage = this.renderLocalImage.bind(this);
+    this.renderCategory = this.renderCategory.bind(this);
   }
 
   componentDidMount() {
     window.scrollTo(0, 0);
+    const listCategories = JSON.parse(localStorage.getItem('categories'));
+    this.setState({listCategories: listCategories});
+
     // const post = this.props.location.state.post;
   }
 
@@ -103,36 +107,19 @@ class CreatePost extends Component {
     return URL.createObjectURL(this.state.picture);
   }
 
+  renderCategory() {
+    return this.state.listCategories.map((cate, index) => {
+      return (
+        <option value={cate.name} key={index}>
+          {cate.name}
+        </option>
+      );
+    });
+  }
+
   render() {
     return this.state.post ? (
       <div>
-        {/* Title Page */}
-        <section className='bg-title-page flex-c-m p-t-160 p-b-80 p-l-15 p-r-15'>
-          <img src={`${this.state.picture ? this.renderLocalImage() : null}`} />
-          <h2 className='tit6'>{this.state.post.author}</h2>
-        </section>
-        {/* Content page */}
-        <FileUploader
-          accept='image/*'
-          name='avatar'
-          randomizeFilename
-          storageRef={firebase.storage().ref('images')}
-          onUploadStart={this.handleUploadStart}
-          onUploadError={this.handleUploadError}
-          onUploadSuccess={this.handleUploadSuccess}
-          onProgress={this.handleProgress}
-          onChange={this.onChangeHandler}
-          ref={instance => {
-            this.fileUploader = instance;
-          }}
-        />
-        {/* <ImageUploader
-          withIcon={true}
-          buttonText='Choose images'
-          onChange={this.onDrop}
-          imgExtension={['.jpg', '.gif', '.png', '.gif']}
-          maxFileSize={5242880}
-        /> */}
         <section>
           <div className='container'>
             {/* Block4 */}
@@ -147,49 +134,52 @@ class CreatePost extends Component {
               {/* - */}
               <div className='text-blo4 p-t-33'>
                 <h4 className='p-b-16'>
-                  <span className='tit9'>
-                    {this.state.post.title} by {this.state.post.author}
-                  </span>
+                  <input
+                    className='tit9'
+                    type='text'
+                    placeholder='Title'
+                    onChange={e => {
+                      // this.setState({})
+                      console.log('TCL: render -> e', e.target.value);
+                    }}
+                  />
                 </h4>
-                <div className='txt32 flex-w p-b-24'>
-                  <span>
-                    by {this.state.post.username}
-                    <span className='m-r-6 m-l-4'>|</span>
-                  </span>
-                  <span>
-                    {this.renderDate()}
-                    <span className='m-r-6 m-l-4'>|</span>
-                  </span>
-                  <span>
-                    {this.state.post.category_name}
-                    <span className='m-r-6 m-l-4'>|</span>
-                  </span>
-                  <span>{this.state.post.views_count} Views</span>
-                </div>
-                <p>{this.state.post.content}</p>
+                {this.state.picture ? <img src={this.renderLocalImage()} /> : null}
+                <FileUploader
+                  accept='image/*'
+                  name='avatar'
+                  randomizeFilename
+                  storageRef={firebase.storage().ref('images')}
+                  onUploadStart={this.handleUploadStart}
+                  onUploadError={this.handleUploadError}
+                  onUploadSuccess={this.handleUploadSuccess}
+                  onProgress={this.handleProgress}
+                  onChange={this.onChangeHandler}
+                  ref={instance => {
+                    this.fileUploader = instance;
+                  }}
+                />
+                <select
+                  name
+                  id
+                  className='form-control'
+                  onChange={evt => {
+                    this.setState({gender: evt.target.value});
+                  }}>
+                  <option value disabled selected>
+                    Category
+                  </option>
+                  {this.renderCategory()}
+                </select>
+                <input type='text' placeholder='Content' />
               </div>
             </div>
-            {/* Leave a comment */}
-            <form className='leave-comment p-t-10'>
-              <h4 className='txt33 p-b-14'>Leave a Comment</h4>
-              <textarea
-                className='bo-rad-10 size29 bo2 txt10 p-l-20 p-t-15 m-b-10 m-t-40'
-                name='commentent'
-                placeholder='Comment...'
-                defaultValue={''}
-                onChange={evt => {
-                  console.log(evt.target.value);
-                }}
-                // value={}
-              />
-              {/* Button3 */}
-              <button
-                type='button'
-                onClick={this.postComment}
-                className='btn3 flex-c-m size31 txt11 trans-0-4'>
-                Post Comment
-              </button>
-            </form>
+            <button
+              type='button'
+              onClick={this.postComment}
+              className='btn3 flex-c-m size31 txt11 trans-0-4'>
+              Post
+            </button>
           </div>
         </section>
       </div>

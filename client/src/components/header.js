@@ -69,6 +69,7 @@ const Header = props => {
   };
   //hide header in dashboard
   if (props.history.location.pathname === Path.Dashboard) return null;
+  if (props.history.location.pathname === Path.CreatePost) return null;
   return (
     <header>
       {/* Header desktop */}

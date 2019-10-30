@@ -36,6 +36,7 @@ class ListPost extends Component {
 
     getListCategories()
       .then(res => {
+        localStorage.setItem('categories', JSON.stringify(res.data));
         this.setState({listCategories: res.data});
       })
       .catch(err => {});
