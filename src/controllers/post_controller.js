@@ -225,3 +225,51 @@ export async function rejectPost(request, response, next) {
     console.log(error);
   }
 }
+
+export async function createPost(request, response, next) {
+  const db = await dbConnection.get();
+  let postRequestBody = request.body;
+  console.log('TCL: createPost -> postRequestBody', postRequestBody);
+  let postCreator = request.decodedToken;
+  console.log('TCL: createPost -> postCreator', postCreator);
+
+  const postInsertBody = {
+    title: postRequestBody.title,
+    image: postRequestBody.image,
+    author: postRequestBody.author,
+    publish_date: postRequestBody.publish_date,
+    category_id: postRequestBody.category_id,
+    content: postRequestBody.content,
+    status: PostStatusEnum.PENDING,
+    created_date: new Date(),
+    post_creator_id: postCreator.id
+  };
+  try {
+    const resultInsertPost = db.query(
+      `
+    INSERT INTO ${POSTS_TABLE}
+    (title,image, author, publish_date, category, content, status, post_creator_id, created_date,document_vectors)
+    VALUES
+    ($1,$2,$3,$4,$5,$6,$7,$8,$9,to_tsvector($10)||to_tsvector($11)||to_tsvector($12))
+    `,
+      [
+        postInsertBody.title,
+        postInsertBody.image,
+        postInsertBody.author,
+        postInsertBody.publish_date,
+        postInsertBody.category_id,
+        postInsertBody.content,
+        postInsertBody.status,
+        postInsertBody.post_creator_id,
+        postInsertBody.created_date,
+        postInsertBody.title,
+        postInsertBody.author,
+        postInsertBody.content
+      ]
+    );
+    console.log("TCL: createPost -> resultInsertPost", resultInsertPost.rows)
+    return response.status(HttpStatusCode.OK).send('Sending post successfully');
+  } catch (error) {
+    console.log(error);
+  }
+}

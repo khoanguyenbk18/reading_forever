@@ -20,7 +20,7 @@ export const checkTokenMiddleware = async (request, response, next) => {
     if (token) {
       await jwt.verify(token, SECRET_JWT_KEY, (error, decodedToken) => {
         if (error) {
-          return Error('TokenIsNotValid', HttpStatusCode.UNAUTHORIZED);
+          return response.status(HttpStatusCode.BAD_GATEWAY).send('Token is invalid');
         }
         request.decodedToken = {
           id: decodedToken.id,
