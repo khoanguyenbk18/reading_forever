@@ -12,10 +12,13 @@ import Register from './register';
 import Login from './login';
 import Dashboard from './dashboard';
 import UserProfile from './user_profile';
+import CreatePost from './create_post';
 import {Path} from '../libs/path';
 import ScrollToTop from '../components/scroll_to_top';
 import AdminRoute from '../components/admin_route';
 import PrivateRoute from '../components/private_route';
+
+import '../services/firebase';
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -34,6 +37,7 @@ class App extends React.Component {
         <Route path={Path.Register} component={Register} />
         <Route path={Path.Login} component={Login} />
         <PrivateRoute path={Path.UserProfle} component={UserProfile} />
+        <PrivateRoute path={Path.CreatePost} component={CreatePost} />
         <AdminRoute component={Dashboard} path={Path.Dashboard} />
         <Footer />
       </BrowserRouter>
