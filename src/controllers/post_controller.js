@@ -1,4 +1,4 @@
-import dbConnection, {POSTS_TABLE, USERS_TABLE, CATEGORIES_TABLE} from '../database';
+import dbConnection, {POSTS_TABLE, USERS_TABLE, CATEGORIES_TABLE, COMMENT_TABLE} from '../database';
 import HttpStatusCode from 'http-status-codes';
 import {PostStatusEnum} from '../lib/enums/post_status_enum';
 const PAGE_SIZE = 10;
@@ -271,5 +271,46 @@ export async function createPost(request, response, next) {
     return response.status(HttpStatusCode.OK).send('Sending post successfully');
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function getPostDetail(request, response, next) {
+  const db = await dbConnection.get();
+  const postId = request.query.postId;
+  console.log('TCL: getPostDetail -> postId', postId);
+  try {
+    const resultPostDetail = await db.query(
+      `
+    SELECT
+    ${POSTS_TABLE}.id,
+    ${POSTS_TABLE}.title,
+    ${POSTS_TABLE}.image,
+    ${POSTS_TABLE}.author,
+    ${POSTS_TABLE}.publish_date,
+    ${POSTS_TABLE}.category,
+    ${POSTS_TABLE}.views_count,
+    ${POSTS_TABLE}.status,
+    ${POSTS_TABLE}.post_creator_id,
+    ${POSTS_TABLE}.created_date,
+    ${USERS_TABLE}.username,
+    array_to_json(array_agg(${COMMENT_TABLE}.*)) as detail_comments
+    FROM ${POSTS_TABLE}
+    LEFT JOIN ${COMMENT_TABLE} ON ${COMMENT_TABLE}.id = ANY(${POSTS_TABLE}.comment_ids)
+    LEFT JOIN ${USERS_TABLE} ON ${USERS_TABLE}.id = ${POSTS_TABLE}.post_creator_id
+    WHERE ${POSTS_TABLE}.id = $1
+    GROUP BY ${POSTS_TABLE}.id, ${USERS_TABLE}.id
+    `,
+      [postId]
+    );
+
+    if (resultPostDetail.rows[0]) {
+      const postDetail = resultPostDetail.rows[0];
+      postDetail.post_creator_username = postDetail.username;
+      delete postDetail.username;
+    }
+
+    return response.status(HttpStatusCode.OK).send(resultPostDetail.rows[0]);
+  } catch (error) {
+    console.log('TCL: error', error);
   }
 }

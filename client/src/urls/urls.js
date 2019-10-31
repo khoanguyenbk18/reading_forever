@@ -1,4 +1,5 @@
 export const BASE_URL = 'https://reading-forever.herokuapp.com';
+export const BASE_URL_LOCAL = 'http://localhost:5000';
 const API_VERSION = 'v1';
 const API_POSTS = 'posts';
 const API_USERS = 'users';

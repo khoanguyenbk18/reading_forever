@@ -8,7 +8,7 @@ export const COMMENT_TABLE = 'comments';
 export const CATEGORIES_TABLE = 'categories';
 export const NOTIFICATION_TABLE = 'notifications';
 
-const isProduction = true;
+const isProduction = false;
 
 //Singleton
 const dbConnection = () => {

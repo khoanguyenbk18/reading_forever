@@ -8,12 +8,14 @@ import {
   getListPostsPending,
   acceptPost,
   rejectPost,
-  createPost
+  createPost,
+  getPostDetail
 } from '../controllers/post_controller';
 import {checkTokenMiddleware} from '../middlewares/check_token_middleware';
 
 const postRouter = express.Router();
 postRouter.get('/list', getListPosts);
+postRouter.get('/detail', getPostDetail);
 postRouter.get('/categories', getListCategories);
 postRouter.get('/mostpopular', getListMostPopular);
 postRouter.get('/search', searchPosts);
