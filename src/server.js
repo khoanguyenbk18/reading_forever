@@ -2,7 +2,6 @@ import userRouter from './routes/users_router';
 import postRouter from './routes/posts_router';
 const express = require('express');
 const cors = require('cors');
-const axios = require('axios');
 const bodyParser = require('body-parser');
 const app = express();
 
