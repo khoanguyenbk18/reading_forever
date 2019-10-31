@@ -267,7 +267,7 @@ export async function createPost(request, response, next) {
         postInsertBody.content
       ]
     );
-    console.log("TCL: createPost -> resultInsertPost", resultInsertPost.rows)
+    console.log('TCL: createPost -> resultInsertPost', resultInsertPost.rows);
     return response.status(HttpStatusCode.OK).send('Sending post successfully');
   } catch (error) {
     console.log(error);

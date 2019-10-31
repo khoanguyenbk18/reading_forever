@@ -3,21 +3,28 @@ import firebase from 'firebase';
 import FileUploader from 'react-firebase-file-uploader';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-
+import {createPost} from '../urls/post_apis';
+import {isEmpty} from 'validator';
 class CreatePost extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      //post body
+      title: '',
+      image: '',
+      author: '',
+      publish_date: new Date(),
+      category_id: 0,
+      content: '',
+
       listCategories: [],
       isUploading: false,
       progress: 0,
       avatarURL: '',
-      picture: null,
-      startDate: new Date()
+      picture: null
     };
     this.postComment = this.postComment.bind(this);
     this.onChangeHandler = this.onChangeHandler.bind(this);
-    // this.onDrop = this.onDrop.bind(this);
     this.renderLocalImage = this.renderLocalImage.bind(this);
     this.renderCategory = this.renderCategory.bind(this);
   }
@@ -26,8 +33,6 @@ class CreatePost extends Component {
     window.scrollTo(0, 0);
     const listCategories = JSON.parse(localStorage.getItem('categories'));
     this.setState({listCategories: listCategories});
-
-    // const post = this.props.location.state.post;
   }
 
   handleUploadStart = () => this.setState({isUploading: true, progress: 0});
@@ -37,27 +42,71 @@ class CreatePost extends Component {
     console.error(error);
   };
   handleUploadSuccess = filename => {
+    console.log('TCL: CreatePost -> filename', filename);
     this.setState({avatar: filename, progress: 100, isUploading: false});
     firebase
       .storage()
       .ref('images')
       .child(filename)
       .getDownloadURL()
-      .then(url => this.setState({avatarURL: url}));
+      .then(url => {
+        // this.setState({avatarURL: url});
+        this.createPostToServer(url);
+      });
   };
 
+  postIsFullFill() {
+    if (isEmpty(this.state.title)) return false;
+    if (isEmpty(this.state.author)) return false;
+    if (this.state.picture) return false;
+    if (isEmpty(this.state.content)) return false;
+    if (this.state.category_id === 0) return false;
+    return true;
+  }
+
+  createPostToServer(url) {
+    const postBody = {
+      title: this.state.title,
+      image: url,
+      author: this.state.author,
+      publish_date: this.state.publish_date,
+      category_id: this.state.category_id,
+      content: this.state.content
+    };
+    createPost(postBody)
+      .then(res => {
+        console.log('TCL: CreatePost -> createPostToServer -> res', res);
+        this.showToast();
+      })
+      .catch(err => {
+        console.log('TCL: CreatePost -> createPostToServer -> err', err);
+      });
+  }
+
+  showToast() {
+    var x = document.getElementById('toast');
+    x.className = 'show';
+    setTimeout(function() {
+      x.className = x.className.replace('show', '');
+    }, 5000);
+  }
+
   postComment() {
-    const {picture} = this.state;
-    this.fileUploader.startUpload(picture);
+    //Upload image to firebase
+    if (this.postIsFullFill()) {
+      const {picture} = this.state;
+      if (picture) {
+        this.fileUploader.startUpload(picture);
+      }
+    } else {
+      window.alert('You need to fill all the content to post');
+    }
   }
 
   onChangeHandler = event => {
     const {
       target: {files}
     } = event;
-    console.log('TCL: CreatePost -> files', files);
-
-    // files.map(file => filesToStore.push(file));
 
     this.setState({picture: files[0]}, () => {
       console.log(this.state.picture);
@@ -80,7 +129,7 @@ class CreatePost extends Component {
 
   handleChange = date => {
     this.setState({
-      startDate: date
+      publish_date: date
     });
   };
   render() {
@@ -98,8 +147,7 @@ class CreatePost extends Component {
                     type='text'
                     placeholder='Title'
                     onChange={e => {
-                      // this.setState({})
-                      console.log('TCL: render -> e', e.target.value);
+                      this.setState({title: e.target.value});
                     }}
                   />
                 </h4>
@@ -109,8 +157,7 @@ class CreatePost extends Component {
                     type='text'
                     placeholder='Author'
                     onChange={e => {
-                      // this.setState({})
-                      console.log('TCL: render -> e', e.target.value);
+                      this.setState({author: e.target.value});
                     }}
                   />
                 </h5>
@@ -119,7 +166,7 @@ class CreatePost extends Component {
                     Publish Date:
                     <DatePicker
                       className='tit10'
-                      selected={this.state.startDate}
+                      selected={this.state.publish_date}
                       onChange={this.handleChange}
                     />
                   </div>
@@ -145,7 +192,11 @@ class CreatePost extends Component {
                   id
                   className='form-control'
                   onChange={evt => {
-                    this.setState({gender: evt.target.value});
+                    const selectedCategory = this.state.listCategories.find(
+                      cate => cate.name === evt.target.value
+                    );
+                    console.log('TCL: render -> selectedCategory', selectedCategory);
+                    this.setState({category_id: selectedCategory.id});
                   }}>
                   <option value disabled selected>
                     Category
@@ -163,6 +214,10 @@ class CreatePost extends Component {
             </button>
           </div>
         </section>
+        <div id='toast'>
+          <div id='img'>DONE!</div>
+          <div id='desc'>...Your post is pending for admin to review....</div>
+        </div>
       </div>
     );
   }

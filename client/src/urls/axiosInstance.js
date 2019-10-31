@@ -6,5 +6,9 @@ const axiosInstance = axios.create({
 
 axiosInstance.defaults.timeout = 20000; //Timeout request
 axiosInstance.defaults.headers.common['Content-Type'] = 'application/json';
+if (localStorage.getItem('user')) {
+  const user = JSON.parse(localStorage.getItem('user'));
+  axiosInstance.defaults.headers.common['Authorization'] = user.api_token;
+}
 
 export {axiosInstance};

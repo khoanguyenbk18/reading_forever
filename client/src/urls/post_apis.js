@@ -7,7 +7,8 @@ import {
   GET_LIST_POSTS_BY_CATEGORY_API,
   GET_LIST_MOST_PENDING,
   ACCEPT_POST_PENDING,
-  REJECT_POST_PENDING
+  REJECT_POST_PENDING,
+  CREATE_POST
 } from './urls';
 
 export const getListPost = pageNumber => {
@@ -40,4 +41,8 @@ export const acceptPost = postId => {
 };
 export const rejectPost = postId => {
   return axiosInstance.post(REJECT_POST_PENDING, {postId: postId});
+};
+
+export const createPost = postBody => {
+  return axiosInstance.post(CREATE_POST, postBody);
 };
