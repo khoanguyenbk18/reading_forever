@@ -10,10 +10,9 @@
     "clean": "rimraf build && mkdir build",
     "build-babel": "babel -d ./build ./src -s",
     "build": "npm run clean && npm run build-babel",
-    "server": "nodemon --exec babel-node src/server.js",
     "client": "npm start --prefix client",
     "devStart": "concurrently \"npm run server\" \"npm run client\"",
-    "start": "concurrently \"npm run build && node src/server.js\" \"npm run client\"",
+    "start": "npm run build && node ./build/server.js",
     "heroku-postbuild": "npm install --prefix client && npm run build --prefix client"
   },
   "keywords": [],
