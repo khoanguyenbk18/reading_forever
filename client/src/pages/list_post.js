@@ -36,6 +36,7 @@ class ListPost extends Component {
 
     getListCategories()
       .then(res => {
+        localStorage.setItem('categories', JSON.stringify(res.data));
         this.setState({listCategories: res.data});
       })
       .catch(err => {});
@@ -59,9 +60,13 @@ class ListPost extends Component {
 
   renderListPost() {
     if (this.state.listPosts.data) {
-      return this.state.listPosts.data.map((item, index) => {
-        return <ItemPost key={index} post={item} />;
-      });
+      if (this.state.listPosts.data.length > 0) {
+        return this.state.listPosts.data.map((item, index) => {
+          return <ItemPost key={index} post={item} />;
+        });
+      } else {
+        return <h2>THERE IS NOT POST</h2>;
+      }
     } else {
       return null;
     }

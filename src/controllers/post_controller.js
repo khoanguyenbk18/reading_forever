@@ -1,6 +1,6 @@
-import dbConnection, {POSTS_TABLE, USERS_TABLE, CATEGORIES_TABLE} from '../database';
+import dbConnection, {POSTS_TABLE, USERS_TABLE, CATEGORIES_TABLE, COMMENT_TABLE} from '../database';
 import HttpStatusCode from 'http-status-codes';
-
+import {PostStatusEnum} from '../lib/enums/post_status_enum';
 const PAGE_SIZE = 10;
 
 export async function getListPosts(request, response, next) {
@@ -9,13 +9,17 @@ export async function getListPosts(request, response, next) {
     console.log('TCL: getListPosts -> pageNumber', pageNumber);
     const OFFSET = (pageNumber - 1) * PAGE_SIZE;
     const db = await dbConnection.get();
-    const result = await db.query(`
+    const result = await db.query(
+      `
     SELECT p.*, u.username , c.name
     FROM ${POSTS_TABLE} p
     INNER JOIN ${USERS_TABLE} u ON p.post_creator_id = u.id
     INNER JOIN ${CATEGORIES_TABLE} c ON p.category = c.id
+    WHERE p.status = $1
     ORDER BY p.created_date DESC
-    LIMIT ${PAGE_SIZE} OFFSET ${OFFSET}`);
+    LIMIT ${PAGE_SIZE} OFFSET ${OFFSET}`,
+      [PostStatusEnum.ACCEPT]
+    );
 
     const rowcountResult = await db.query(`
     SELECT COUNT(*) FROM ${POSTS_TABLE}`);
@@ -40,6 +44,39 @@ export async function getListPosts(request, response, next) {
   }
 }
 
+export async function getListPostsPending(request, response, next) {
+  try {
+    const db = await dbConnection.get();
+
+    const result = await db.query(
+      `
+    SELECT p.*, u.username , c.name
+    FROM ${POSTS_TABLE} p
+    INNER JOIN ${USERS_TABLE} u ON p.post_creator_id = u.id
+    INNER JOIN ${CATEGORIES_TABLE} c ON p.category = c.id
+    WHERE p.status = $1
+    ORDER BY p.created_date DESC
+    LIMIT 10`,
+      [PostStatusEnum.PENDING]
+    );
+
+    result.rows.map(post => {
+      if (post.hasOwnProperty('name')) {
+        post.category_name = post.name;
+        delete post.name;
+      }
+      return post;
+    });
+    let responseData = {
+      data: result.rows
+    };
+
+    return response.status(HttpStatusCode.OK).send(responseData);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function getListPostsByCategory(request, response, next) {
   try {
     const categoryId = request.query.categoryId;
@@ -50,9 +87,9 @@ export async function getListPostsByCategory(request, response, next) {
     FROM ${POSTS_TABLE} p
     INNER JOIN ${USERS_TABLE} u ON p.post_creator_id = u.id
     INNER JOIN ${CATEGORIES_TABLE} c ON p.category = c.id
-    WHERE c.id = $1
+    WHERE p.status = $1 AND c.id = $2
     ORDER BY p.created_date DESC`,
-      [categoryId]
+      [PostStatusEnum.ACCEPT, categoryId]
     );
 
     result.rows.map(post => {
@@ -89,13 +126,17 @@ export async function getListMostPopular(request, response, next) {
   try {
     const db = await dbConnection.get();
     const LIMIT = 5;
-    const result = await db.query(`
+    const result = await db.query(
+      `
     SELECT p.*, u.username , c.name
     FROM ${POSTS_TABLE} p
     INNER JOIN ${USERS_TABLE} u ON p.post_creator_id = u.id
     INNER JOIN ${CATEGORIES_TABLE} c ON p.category = c.id
+    WHERE p.status = $1
     ORDER BY p.views_count DESC
-    LIMIT ${LIMIT}`);
+    LIMIT ${LIMIT}`,
+      [PostStatusEnum.ACCEPT]
+    );
 
     result.rows.map(post => {
       if (post.hasOwnProperty('name')) {
@@ -122,11 +163,11 @@ export async function searchPosts(request, response, next) {
     FROM ${POSTS_TABLE} p
     INNER JOIN ${USERS_TABLE} u ON p.post_creator_id = u.id
     INNER JOIN ${CATEGORIES_TABLE} c ON p.category = c.id
-    WHERE document_vectors @@ plainto_tsquery($1)
+    WHERE p.status = $1 AND document_vectors @@ plainto_tsquery($2)
     ORDER BY p.views_count DESC
     LIMIT ${LIMIT}
     `,
-      [queryString]
+      [PostStatusEnum.ACCEPT, queryString]
     );
 
     result.rows.map(post => {
@@ -140,5 +181,136 @@ export async function searchPosts(request, response, next) {
     return response.status(HttpStatusCode.OK).send(result.rows);
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function acceptPost(request, response, next) {
+  const db = await dbConnection.get();
+  let userRequestBody = request.body;
+  const acceptPostId = userRequestBody.postId;
+
+  try {
+    const result = await db.query(
+      `
+      UPDATE ${POSTS_TABLE}
+      SET status = ${PostStatusEnum.ACCEPT}
+      WHERE id = $1
+    `,
+      [acceptPostId]
+    );
+
+    return response.status(HttpStatusCode.OK).send('Update sucessfully');
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function rejectPost(request, response, next) {
+  const db = await dbConnection.get();
+  let userRequestBody = request.body;
+  const rejectPostId = userRequestBody.postId;
+
+  try {
+    const result = await db.query(
+      `
+      UPDATE ${POSTS_TABLE}
+      SET status = ${PostStatusEnum.REJECT}
+      WHERE id = $1
+    `,
+      [rejectPostId]
+    );
+
+    return response.status(HttpStatusCode.OK).send('Update sucessfully');
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function createPost(request, response, next) {
+  const db = await dbConnection.get();
+  let postRequestBody = request.body;
+  console.log('TCL: createPost -> postRequestBody', postRequestBody);
+  let postCreator = request.decodedToken;
+  console.log('TCL: createPost -> postCreator', postCreator);
+
+  const postInsertBody = {
+    title: postRequestBody.title,
+    image: postRequestBody.image,
+    author: postRequestBody.author,
+    publish_date: postRequestBody.publish_date,
+    category_id: postRequestBody.category_id,
+    content: postRequestBody.content,
+    status: PostStatusEnum.PENDING,
+    created_date: new Date(),
+    post_creator_id: postCreator.id
+  };
+  try {
+    const resultInsertPost = db.query(
+      `
+    INSERT INTO ${POSTS_TABLE}
+    (title,image, author, publish_date, category, content, status, post_creator_id, created_date,document_vectors)
+    VALUES
+    ($1,$2,$3,$4,$5,$6,$7,$8,$9,to_tsvector($10)||to_tsvector($11)||to_tsvector($12))
+    `,
+      [
+        postInsertBody.title,
+        postInsertBody.image,
+        postInsertBody.author,
+        postInsertBody.publish_date,
+        postInsertBody.category_id,
+        postInsertBody.content,
+        postInsertBody.status,
+        postInsertBody.post_creator_id,
+        postInsertBody.created_date,
+        postInsertBody.title,
+        postInsertBody.author,
+        postInsertBody.content
+      ]
+    );
+    console.log('TCL: createPost -> resultInsertPost', resultInsertPost.rows);
+    return response.status(HttpStatusCode.OK).send('Sending post successfully');
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getPostDetail(request, response, next) {
+  const db = await dbConnection.get();
+  const postId = request.query.postId;
+  console.log('TCL: getPostDetail -> postId', postId);
+  try {
+    const resultPostDetail = await db.query(
+      `
+    SELECT
+    ${POSTS_TABLE}.id,
+    ${POSTS_TABLE}.title,
+    ${POSTS_TABLE}.image,
+    ${POSTS_TABLE}.author,
+    ${POSTS_TABLE}.publish_date,
+    ${POSTS_TABLE}.category,
+    ${POSTS_TABLE}.views_count,
+    ${POSTS_TABLE}.status,
+    ${POSTS_TABLE}.post_creator_id,
+    ${POSTS_TABLE}.created_date,
+    ${USERS_TABLE}.username,
+    array_to_json(array_agg(${COMMENT_TABLE}.*)) as detail_comments
+    FROM ${POSTS_TABLE}
+    LEFT JOIN ${COMMENT_TABLE} ON ${COMMENT_TABLE}.id = ANY(${POSTS_TABLE}.comment_ids)
+    LEFT JOIN ${USERS_TABLE} ON ${USERS_TABLE}.id = ${POSTS_TABLE}.post_creator_id
+    WHERE ${POSTS_TABLE}.id = $1
+    GROUP BY ${POSTS_TABLE}.id, ${USERS_TABLE}.id
+    `,
+      [postId]
+    );
+
+    if (resultPostDetail.rows[0]) {
+      const postDetail = resultPostDetail.rows[0];
+      postDetail.post_creator_username = postDetail.username;
+      delete postDetail.username;
+    }
+
+    return response.status(HttpStatusCode.OK).send(resultPostDetail.rows[0]);
+  } catch (error) {
+    console.log('TCL: error', error);
   }
 }

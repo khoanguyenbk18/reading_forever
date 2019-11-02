@@ -1,14 +1,24 @@
 import React, {Component} from 'react';
 import moment from 'moment';
+import firebase from 'firebase';
+import FileUploader from 'react-firebase-file-uploader';
+
 class PostDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      post: null
+      post: null,
+      username: '',
+      avatar: '',
+      isUploading: false,
+      progress: 0,
+      avatarURL: ''
     };
     this.postComment = this.postComment.bind(this);
   }
+
   componentDidMount() {
+    window.scrollTo(0, 0);
     const post = this.props.location.state.post;
     console.log('TCL: PostDetail -> componentDidMount -> post', post);
     this.setState({post: post}, () => {
@@ -16,6 +26,23 @@ class PostDetail extends Component {
       // console.log(this.state.post.post.author);
     });
   }
+
+  handleChangeUsername = event => this.setState({username: event.target.value});
+  handleUploadStart = () => this.setState({isUploading: true, progress: 0});
+  handleProgress = progress => this.setState({progress});
+  handleUploadError = error => {
+    this.setState({isUploading: false});
+    console.error(error);
+  };
+  handleUploadSuccess = filename => {
+    this.setState({avatar: filename, progress: 100, isUploading: false});
+    firebase
+      .storage()
+      .ref('images')
+      .child(filename)
+      .getDownloadURL()
+      .then(url => this.setState({avatarURL: url}));
+  };
 
   renderDateInMonth() {
     const day = moment(this.state.post.created_date).daysInMonth();

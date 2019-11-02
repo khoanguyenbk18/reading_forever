@@ -1,12 +1,12 @@
 import {Pool} from 'pg';
 
-const dotenv = require('dotenv');
-dotenv.config();
+import 'dotenv/config';
 
 export const USERS_TABLE = 'users';
 export const POSTS_TABLE = 'posts';
 export const COMMENT_TABLE = 'comments';
 export const CATEGORIES_TABLE = 'categories';
+export const NOTIFICATION_TABLE = 'notifications';
 
 const isProduction = false;
 
@@ -16,7 +16,7 @@ const dbConnection = () => {
 
   const initDB = async () => {
     try {
-      if(isProduction){
+      if (isProduction) {
         pool = new Pool({
           user: process.env.DB_USER,
           host: process.env.DB_HOST,
@@ -25,7 +25,7 @@ const dbConnection = () => {
           database: process.env.DB_DATABASE,
           ssl: true
         });
-      }else{
+      } else {
         pool = new Pool({
           user: process.env.LOCAL_DB_USER,
           host: process.env.LOCAL_DB_HOST,

@@ -1,45 +1,75 @@
 import React from 'react';
 import {Link, withRouter} from 'react-router-dom';
+import {Path} from '../libs/path';
 const Header = props => {
-  const linkHomePage = {pathname: '/'};
-  const linkRegisterPage = {pathname: '/register'};
-  const linkLoginPage = {pathname: '/login'};
-
+  const linkHomePage = {pathname: Path.LandingPage};
+  const linkRegisterPage = {pathname: Path.Register};
+  const linkLoginPage = {pathname: Path.Login};
+  const linkCreatePostPage = {pathname: Path.CreatePost};
+  const linkUserProfile = {pathname: Path.UserProfle};
   const renderNav = () => {
+    const HomeButton = (
+      <li>
+        <Link to={linkHomePage}>Home</Link>
+      </li>
+    );
     if (localStorage.getItem('user')) {
+      const LogoutButton = (
+        <li>
+          <Link
+            onClick={() => {
+              localStorage.removeItem('user');
+              props.history.push(linkHomePage);
+            }}>
+            Logout
+          </Link>
+        </li>
+      );
+
+      const CreatePost = (
+        <li>
+          <Link to={linkCreatePostPage}>Create Post</Link>
+        </li>
+      );
+
+      const Profile = (
+        <li>
+          <Link to={linkUserProfile}>Profile</Link>
+        </li>
+      );
+
       return (
         <ul className='main_menu'>
-          <li>
-            <Link to={linkHomePage}>Home</Link>
-          </li>
-          <li>
-            <Link
-              onClick={() => {
-                localStorage.removeItem('user');
-                props.history.push(linkHomePage);
-              }}>
-              Logout
-            </Link>
-          </li>
+          {HomeButton}
+          {LogoutButton}
+          {CreatePost}
+          {Profile}
         </ul>
       );
     } else {
+      const RegisterButton = (
+        <li>
+          <Link to={linkRegisterPage}>Register</Link>
+        </li>
+      );
+
+      const LoginButton = (
+        <li>
+          <Link to={linkLoginPage}>Login</Link>
+        </li>
+      );
       return (
         <ul className='main_menu'>
-          <li>
-            <Link to={linkHomePage}>Home</Link>
-          </li>
-          <li>
-            <Link to={linkRegisterPage}>Register</Link>
-          </li>
-          <li>
-            <Link to={linkLoginPage}>Login</Link>
-          </li>
+          {HomeButton}
+          {RegisterButton}
+          {LoginButton}
         </ul>
       );
     }
   };
-
+  //hide header in dashboard
+  if (props.history.location.pathname === Path.Dashboard) return null;
+  if (props.history.location.pathname === Path.CreatePost) return null;
   return (
     <header>
       {/* Header desktop */}

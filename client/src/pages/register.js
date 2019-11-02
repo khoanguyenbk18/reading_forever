@@ -1,11 +1,6 @@
 import React, {Component} from 'react';
-import FormError from '../components/form_error';
 import {Link} from 'react-router-dom';
 import {register} from '../urls/user_apis';
-import Input from 'react-validation/build/input';
-import Form from 'react-validation/build/form';
-import {isEmail, isEmpty, contains} from 'validator';
-
 class Register extends Component {
   constructor(props) {
     super(props);
@@ -16,21 +11,9 @@ class Register extends Component {
       email: '',
       password: '',
       confirm_password: '',
-      gender: '',
-      errors: {
-        first_name: '',
-        last_name: '',
-        user_name: '',
-        email: '',
-        confirm_password: ''
-      }
+      gender: ''
     };
     this.onRegister = this.onRegister.bind(this);
-    this.validateRequire = this.validateRequire.bind(this);
-    this.validateMinLength = this.validateMinLength.bind(this);
-    this.validateEmail = this.validateEmail.bind(this);
-    this.validateContainsSpace = this.validateContainsSpace.bind(this);
-    this.validateConfirmPassword = this.validateConfirmPassword.bind(this);
   }
 
   validateConfirmPassword = value => {
@@ -39,59 +22,8 @@ class Register extends Component {
     }
   };
 
-  validateContainsSpace = value => {
-    if (value !== '') {
-      if (contains(value, ' ')) {
-        return <span className='form-text text-danger'>Must not contains spaces</span>;
-      }
-    }
-  };
-
-  validateEmail = value => {
-    if (!isEmail(value)) {
-      return <span className='form-text text-danger'>Invalid email format</span>;
-    }
-  };
-
-  validateRequire = value => {
-    if (isEmpty(value)) {
-      return <span className='form-text text-danger'>This field is required</span>;
-    }
-  };
-
-  validateMinLength = value => {
-    if (value.trim().length < 6) {
-      return (
-        <span className='form-text text-danger'>Password must be at least 6 characters long</span>
-      );
-    }
-  };
-
   onRegister() {
     //check input validation
-    console.log(this.state);
-    if (
-      // isEmpty(this.state.first_name) ||
-      // isEmpty(this.state.last_name) ||
-      isEmpty(this.state.user_name) ||
-      isEmpty(this.state.email) ||
-      isEmpty(this.state.gender) ||
-      isEmpty(this.state.password) ||
-      isEmpty(this.state.confirm_password)
-    ) {
-      window.alert('Please fill out the form');
-      return;
-    }
-
-    if (contains(this.state.user_name, ' ')) {
-      window.alert('Username not contains spaces');
-      return;
-    }
-
-    if (!isEmail(this.state.email)) {
-      window.alert('Email is not valid');
-      return;
-    }
 
     if (isEmpty(this.state.gender)) {
       window.alert('Please select your gender');
@@ -123,10 +55,6 @@ class Register extends Component {
       });
   }
 
-  // checkInputFirstNameValidation(event) {
-  //   const {isInputValid, errorMessage} = validateInput(this.state.first_name);
-  // }
-
   render() {
     return (
       <div
@@ -136,10 +64,10 @@ class Register extends Component {
           <div className='image-holder'>
             <img src='images/registration-form-1.jpg' />
           </div>
-          <Form>
+          <form>
             <h3>Registration Form</h3>
-            {/* <div className='form-group'>
-              <Input
+            <div className='form-group'>
+              <input
                 type='text'
                 placeholder='First Name'
                 className='form-control'
@@ -147,21 +75,19 @@ class Register extends Component {
                   this.setState({first_name: evt.target.value});
                 }}
                 value={this.state.first_name}
-                // validations={[this.validateRequire]}
               />
-              <Input
+              <input
                 type='text'
                 placeholder='Last Name'
                 className='form-control'
                 onChange={evt => {
                   this.setState({last_name: evt.target.value});
                 }}
-                // validations={[this.validateRequire]}
                 value={this.state.last_name}
               />
-            </div> */}
+            </div>
             <div className='form-wrapper'>
-              <Input
+              <input
                 type='text'
                 placeholder='Username'
                 className='form-control'
@@ -170,12 +96,11 @@ class Register extends Component {
                   this.setState({user_name: evt.target.value});
                 }}
                 value={this.state.user_name}
-                validations={[this.validateContainsSpace]}
               />
               <i className='zmdi zmdi-account' />
             </div>
             <div className='form-wrapper'>
-              <Input
+              <input
                 type='text'
                 placeholder='Email Address'
                 className='form-control'
@@ -183,7 +108,6 @@ class Register extends Component {
                   this.setState({email: evt.target.value});
                 }}
                 value={this.state.email}
-                validations={[this.validateEmail]}
               />
               <i className='zmdi zmdi-email' />
             </div>
@@ -204,7 +128,7 @@ class Register extends Component {
               <i className='zmdi zmdi-caret-down' style={{fontSize: 17}} />
             </div>
             <div className='form-wrapper'>
-              <Input
+              <input
                 type='password'
                 placeholder='Password'
                 className='form-control'
@@ -216,7 +140,7 @@ class Register extends Component {
               <i className='zmdi zmdi-lock' />
             </div>
             <div className='form-wrapper'>
-              <Input
+              <input
                 type='password'
                 placeholder='Confirm Password'
                 className='form-control'
@@ -224,7 +148,6 @@ class Register extends Component {
                   this.setState({confirm_password: evt.target.value});
                 }}
                 value={this.state.confirm_password}
-                validations={[this.validateConfirmPassword]}
               />
               <i className='zmdi zmdi-lock' />
             </div>
@@ -232,7 +155,7 @@ class Register extends Component {
               Register
               <i className='zmdi zmdi-arrow-right' />
             </button>
-          </Form>
+          </form>
         </div>
       </div>
     );
