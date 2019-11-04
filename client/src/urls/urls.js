@@ -20,6 +20,8 @@ export const GET_LIST_MOST_PENDING = `/api/${API_VERSION}/${API_POSTS}/list/pend
 export const ACCEPT_POST_PENDING = `/api/${API_VERSION}/${API_POSTS}/accept`;
 export const REJECT_POST_PENDING = `/api/${API_VERSION}/${API_POSTS}/reject`;
 export const CREATE_POST = `/api/${API_VERSION}/${API_POSTS}/createPost`;
+export const CREATE_COMMENT = `/api/${API_VERSION}/${API_POSTS}/createComment`;
+export const GET_POST_DETAIL = postId => `/api/${API_VERSION}/${API_POSTS}/detail?postId=${postId}`;
 
 //USER APIs
 export const REGISTER_API = `/api/${API_VERSION}/${API_USERS}/register`;

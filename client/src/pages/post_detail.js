@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import moment from 'moment';
 import firebase from 'firebase';
 import FileUploader from 'react-firebase-file-uploader';
-
+import {getPostDetail, createComment} from '../urls/post_apis';
 class PostDetail extends Component {
   constructor(props) {
     super(props);
@@ -12,7 +12,8 @@ class PostDetail extends Component {
       avatar: '',
       isUploading: false,
       progress: 0,
-      avatarURL: ''
+      avatarURL: '',
+      comment: ''
     };
     this.postComment = this.postComment.bind(this);
   }
@@ -21,10 +22,15 @@ class PostDetail extends Component {
     window.scrollTo(0, 0);
     const post = this.props.location.state.post;
     console.log('TCL: PostDetail -> componentDidMount -> post', post);
-    this.setState({post: post}, () => {
-      console.log(this.state.post);
-      // console.log(this.state.post.post.author);
-    });
+    getPostDetail(post.id)
+      .then(res => {
+        this.setState({post: res.data}, () => {
+          console.log(this.state);
+        });
+      })
+      .catch(err => {
+        console.log('TCL: PostDetail -> err', err);
+      });
   }
 
   handleChangeUsername = event => this.setState({username: event.target.value});
@@ -61,7 +67,34 @@ class PostDetail extends Component {
   }
 
   postComment() {
-    console.log('Post Comment here');
+    console.log(this.state.comment);
+    console.log(this.state.post.id);
+    const commentator = JSON.parse(localStorage.getItem('user'));
+    console.log('TCL: postComment -> commentator', commentator);
+    const commentBody = {
+      postId: this.state.post.id,
+      comment: this.state.comment
+    };
+    createComment(commentBody)
+      .then(res => {
+        console.log('TCL: postComment -> res', res);
+      })
+      .catch(err => {
+        console.log('TCL: postComment -> err', err);
+      });
+  }
+
+  renderListComments() {
+    return this.state.post.detail_comments.map((item, index) => {
+      return (
+        <div className='item' key={index}>
+          <div className='testi_item'>
+            <p>{item.comment}</p>
+            <h4>Admin</h4>
+          </div>
+        </div>
+      );
+    });
   }
 
   render() {
@@ -111,26 +144,34 @@ class PostDetail extends Component {
               </div>
             </div>
             {/* Leave a comment */}
-            <form className='leave-comment p-t-10'>
-              <h4 className='txt33 p-b-14'>Leave a Comment</h4>
-              <textarea
-                className='bo-rad-10 size29 bo2 txt10 p-l-20 p-t-15 m-b-10 m-t-40'
-                name='commentent'
-                placeholder='Comment...'
-                defaultValue={''}
-                onChange={evt => {
-                  console.log(evt.target.value);
-                }}
-                // value={}
-              />
-              {/* Button3 */}
-              <button
-                type='button'
-                onClick={this.postComment}
-                className='btn3 flex-c-m size31 txt11 trans-0-4'>
-                Post Comment
-              </button>
-            </form>
+            {localStorage.getItem('user') ? (
+              <form className='leave-comment p-t-10'>
+                <h4 className='txt33 p-b-14'>Leave a Comment</h4>
+                <textarea
+                  className='bo-rad-10 size29 bo2 txt10 p-l-20 p-t-15 m-b-10 m-t-40'
+                  name='commentent'
+                  placeholder='Comment...'
+                  defaultValue={''}
+                  onChange={evt => {
+                    this.setState({comment: evt.target.value});
+                  }}
+                  // value={}
+                />
+                {/* Button3 */}
+                <button
+                  type='button'
+                  onClick={this.postComment}
+                  className='btn3 flex-c-m size31 txt11 trans-0-4'>
+                  Post Comment
+                </button>
+              </form>
+            ) : null}
+          </div>
+          <div className='container'>
+            <div className='testi_inner'>
+              <h4 className='txt33 p-b-14'>Comments</h4>
+              <div className='testi_slider owl-carousel'>{this.renderListComments()}</div>
+            </div>
           </div>
         </section>
       </div>

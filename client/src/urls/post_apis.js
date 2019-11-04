@@ -8,7 +8,9 @@ import {
   GET_LIST_MOST_PENDING,
   ACCEPT_POST_PENDING,
   REJECT_POST_PENDING,
-  CREATE_POST
+  CREATE_POST,
+  GET_POST_DETAIL,
+  CREATE_COMMENT
 } from './urls';
 
 export const getListPost = pageNumber => {
@@ -45,4 +47,13 @@ export const rejectPost = postId => {
 
 export const createPost = postBody => {
   return axiosInstance.post(CREATE_POST, postBody);
+};
+
+export const createComment = commentBody => {
+  return axiosInstance.post(CREATE_COMMENT, commentBody);
+};
+
+export const getPostDetail = postId => {
+  const getPostDetailById = GET_POST_DETAIL(postId);
+  return axiosInstance.get(getPostDetailById);
 };

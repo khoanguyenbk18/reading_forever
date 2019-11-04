@@ -1,4 +1,9 @@
-import dbConnection, {POSTS_TABLE, USERS_TABLE, CATEGORIES_TABLE, COMMENT_TABLE} from '../database';
+import dbConnection, {
+  POSTS_TABLE,
+  USERS_TABLE,
+  CATEGORIES_TABLE,
+  COMMENTS_TABLE
+} from '../database';
 import HttpStatusCode from 'http-status-codes';
 import {PostStatusEnum} from '../lib/enums/post_status_enum';
 const PAGE_SIZE = 10;
@@ -285,6 +290,7 @@ export async function getPostDetail(request, response, next) {
     ${POSTS_TABLE}.id,
     ${POSTS_TABLE}.title,
     ${POSTS_TABLE}.image,
+    ${POSTS_TABLE}.content,
     ${POSTS_TABLE}.author,
     ${POSTS_TABLE}.publish_date,
     ${POSTS_TABLE}.category,
@@ -293,9 +299,9 @@ export async function getPostDetail(request, response, next) {
     ${POSTS_TABLE}.post_creator_id,
     ${POSTS_TABLE}.created_date,
     ${USERS_TABLE}.username,
-    array_to_json(array_agg(${COMMENT_TABLE}.*)) as detail_comments
+    array_to_json(array_agg(${COMMENTS_TABLE}.*)) as detail_comments
     FROM ${POSTS_TABLE}
-    LEFT JOIN ${COMMENT_TABLE} ON ${COMMENT_TABLE}.id = ANY(${POSTS_TABLE}.comment_ids)
+    LEFT JOIN ${COMMENTS_TABLE} ON ${COMMENTS_TABLE}.id = ANY(${POSTS_TABLE}.comment_ids)
     LEFT JOIN ${USERS_TABLE} ON ${USERS_TABLE}.id = ${POSTS_TABLE}.post_creator_id
     WHERE ${POSTS_TABLE}.id = $1
     GROUP BY ${POSTS_TABLE}.id, ${USERS_TABLE}.id
@@ -312,5 +318,52 @@ export async function getPostDetail(request, response, next) {
     return response.status(HttpStatusCode.OK).send(resultPostDetail.rows[0]);
   } catch (error) {
     console.log('TCL: error', error);
+  }
+}
+
+export async function createComment(request, response, next) {
+  const db = await dbConnection.get();
+  let commentRequestBody = request.body;
+  console.log('TCL: createComment -> commentRequestBody', commentRequestBody);
+  let commentator = request.decodedToken;
+  console.log('TCL: createComment -> commentator', commentator);
+
+  const commentInsertBody = {
+    commentator_username: commentator.username,
+    commentator_id: commentator.id,
+    post_id: commentRequestBody.postId,
+    comment: commentRequestBody.comment
+  };
+  try {
+    const resultInsertComment = await db.query(
+      `
+    INSERT INTO ${COMMENTS_TABLE}
+    (commentator_username,commentator_id, post_id, comment)
+    VALUES
+    ($1,$2,$3,$4)
+    RETURNING id
+    `,
+      [
+        commentInsertBody.commentator_username,
+        commentInsertBody.commentator_id,
+        commentInsertBody.post_id,
+        commentInsertBody.comment
+      ]
+    );
+
+    const commentId = resultInsertComment.rows[0].id;
+    // Update commentId to post
+    const resultInsertCommentToPost = await db.query(
+      `
+      UPDATE ${POSTS_TABLE}
+      SET comment_ids = array_append(comment_ids, $1)
+      WHERE id = $2
+    `,
+      [commentId, commentInsertBody.post_id]
+    );
+    console.log('TCL: createComment -> resultInsertCommentToPost', resultInsertCommentToPost);
+    return response.status(HttpStatusCode.OK).send('Sending comment successfully');
+  } catch (error) {
+    console.log(error);
   }
 }

@@ -115,7 +115,7 @@ class Register extends Component {
     register(registerBody)
       .then(res => {
         console.log('TCL: Register -> onRegister -> res', res);
-        localStorage.setItem('user', res.data);
+        localStorage.setItem('user', JSON.stringify(res.data));
         this.props.history.push('/');
       })
       .catch(err => {
