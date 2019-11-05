@@ -2,7 +2,8 @@ import dbConnection, {
   POSTS_TABLE,
   USERS_TABLE,
   CATEGORIES_TABLE,
-  COMMENTS_TABLE
+  COMMENTS_TABLE,
+  REPORT_TABLE
 } from '../database';
 import HttpStatusCode from 'http-status-codes';
 import {PostStatusEnum} from '../lib/enums/post_status_enum';
@@ -363,6 +364,39 @@ export async function createComment(request, response, next) {
     );
     console.log('TCL: createComment -> resultInsertCommentToPost', resultInsertCommentToPost);
     return response.status(HttpStatusCode.OK).send('Sending comment successfully');
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function reportPost(request, response, next) {
+  const db = await dbConnection.get();
+  let reportRequestBody = request.body;
+  console.log('TCL: createComment -> commentRequestBody', reportRequestBody);
+  let commentator = request.decodedToken;
+  console.log('TCL: createComment -> commentator', commentator);
+
+  const reportInsertBody = {
+    post_id: reportRequestBody.postId,
+    reporter_id: commentator.id,
+    content: reportRequestBody.content
+  };
+  try {
+    const resultInsertReport = await db.query(
+      `
+    INSERT INTO ${REPORT_TABLE}
+    (post_id,reporter_id, content)
+    VALUES
+    ($1,$2,$3)
+    RETURNING id
+    `,
+      [reportInsertBody.post_id, reportInsertBody.reporter_id, reportInsertBody.content]
+    );
+
+    const reportId = resultInsertReport.rows[0].id;
+    // Update commentId to post
+    console.log('TCL: createComment -> resultInsertCommentToPost', resultInsertReport);
+    return response.status(HttpStatusCode.OK).send('Sending report successfully');
   } catch (error) {
     console.log(error);
   }

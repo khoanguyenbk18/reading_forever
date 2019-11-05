@@ -1,21 +1,37 @@
 import React, {Component} from 'react';
 import moment from 'moment';
 import firebase from 'firebase';
-import FileUploader from 'react-firebase-file-uploader';
-import {getPostDetail, createComment} from '../urls/post_apis';
+import Modal from 'react-modal';
+import {getPostDetail, createComment, reportPost} from '../urls/post_apis';
+
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)'
+  }
+};
+
 class PostDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      modalIsOpen: false,
       post: null,
-      username: '',
-      avatar: '',
-      isUploading: false,
-      progress: 0,
-      avatarURL: '',
-      comment: ''
+      comment: '',
+      report: ''
     };
     this.postComment = this.postComment.bind(this);
+    this.reportPost = this.reportPost.bind(this);
+    this.openModal = this.openModal.bind(this);
+    this.afterOpenModal = this.afterOpenModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+    this.renderModal = this.renderModal.bind(this);
+    this.showToast = this.showToast.bind(this);
+    this.report = this.report.bind(this);
   }
 
   componentDidMount() {
@@ -33,22 +49,13 @@ class PostDetail extends Component {
       });
   }
 
-  handleChangeUsername = event => this.setState({username: event.target.value});
-  handleUploadStart = () => this.setState({isUploading: true, progress: 0});
-  handleProgress = progress => this.setState({progress});
-  handleUploadError = error => {
-    this.setState({isUploading: false});
-    console.error(error);
-  };
-  handleUploadSuccess = filename => {
-    this.setState({avatar: filename, progress: 100, isUploading: false});
-    firebase
-      .storage()
-      .ref('images')
-      .child(filename)
-      .getDownloadURL()
-      .then(url => this.setState({avatarURL: url}));
-  };
+  showToast() {
+    var x = document.getElementById('toast');
+    x.className = 'show';
+    setTimeout(function() {
+      x.className = x.className.replace('show', '');
+    }, 5000);
+  }
 
   renderDateInMonth() {
     const day = moment(this.state.post.created_date).daysInMonth();
@@ -64,6 +71,10 @@ class PostDetail extends Component {
   renderDate() {
     const date = moment(this.state.post.created_date).format('MMM, DD YYYY');
     return date;
+  }
+
+  reportPost() {
+    this.openModal();
   }
 
   postComment() {
@@ -103,9 +114,83 @@ class PostDetail extends Component {
     }
   }
 
+  openModal(item) {
+    this.setState({modalIsOpen: true});
+  }
+
+  afterOpenModal() {}
+
+  closeModal() {
+    this.setState({modalIsOpen: false});
+  }
+
+  report() {
+    const {id: reporterId} = JSON.parse(localStorage.getItem('user'));
+    const reportBody = {
+      postId: this.state.post.id,
+      reporter_id: reporterId,
+      content: this.state.report
+    };
+    reportPost(reportBody)
+      .then(res => {
+        console.log('TCL: report -> res', res);
+        console.log(this.state.report);
+        console.log(this.state.post.id);
+        this.showToast();
+        this.setState({modalIsOpen: false});
+      })
+      .catch(err => {
+        console.log('TCL: report -> err', err);
+      });
+  }
+
+  renderModal() {
+    return (
+      <Modal
+        isOpen={this.state.modalIsOpen}
+        onAfterOpen={this.afterOpenModal}
+        onRequestClose={this.closeModal}
+        style={customStyles}>
+        <div className='blo4 p-b-63'>
+          <div className='text-blo4 p-t-33'>
+            <h4 className='p-b-16'>
+              <span className='tit9'>REPORT POST: {this.state.post.title}</span>
+            </h4>
+          </div>
+          {/* - */}
+          <textarea
+            rows='20'
+            cols='50'
+            placeholder='What is wrong with this post?'
+            className='container-fluid'
+            onChange={evt => {
+              this.setState({report: evt.target.value});
+            }}
+            value={this.state.report}
+          />
+          <label
+            style={{
+              backgroundColor: 'steelblue',
+              color: 'white',
+              paddingLeft: 20,
+              paddingRight: 20,
+              paddingTop: 10,
+              paddingBottom: 10,
+              borderRadius: 4,
+              cursor: 'pointer'
+            }}
+            onClick={this.report}>
+            SEND
+          </label>
+        </div>
+      </Modal>
+    );
+  }
+
   render() {
     return this.state.post ? (
       <div>
+        {this.renderModal()}
         {/* Title Page */}
         <section
           className='bg-title-page flex-c-m p-t-160 p-b-80 p-l-15 p-r-15'
@@ -163,7 +248,7 @@ class PostDetail extends Component {
                   }}
                   // value={}
                 />
-                {/* Button3 */}
+                {/* Button Post Comment */}
                 <button
                   type='button'
                   onClick={this.postComment}
@@ -183,7 +268,19 @@ class PostDetail extends Component {
               )}
             </div>
           </div>
+          <div className='container'>
+            <button
+              type='button'
+              onClick={this.reportPost}
+              className='btn3 flex-c-m size31 txt11 trans-0-4'>
+              Report
+            </button>
+          </div>
         </section>
+        <div id='toast'>
+          <div id='img'>DONE!</div>
+          <div id='desc'>...Your report is sent to admin....</div>
+        </div>
       </div>
     ) : null;
   }

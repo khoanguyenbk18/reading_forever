@@ -5,7 +5,7 @@ import {Path} from '../libs/path';
 import FileUploader from 'react-firebase-file-uploader';
 import firebase from 'firebase';
 import {updateProfile} from '../urls/user_apis';
-import {isEmail, isEmpty} from 'validator';
+import {isEmail, isEmpty, isURL} from 'validator';
 class EditUserProfile extends Component {
   constructor(props) {
     super(props);
@@ -58,11 +58,9 @@ class EditUserProfile extends Component {
       avatar: url ? url : this.state.avatar,
       gender: this.state.gender
     };
-    console.log('TCL: EditUserProfile -> updateProfileBody', updateProfileBody);
     updateProfile(updateProfileBody)
       .then(res => {
         let userLocal = JSON.parse(localStorage.getItem('user'));
-        console.log('TCL: EditUserProfile -> userLocal', userLocal);
         userLocal.username = updateProfileBody.username;
         userLocal.email = updateProfileBody.email;
         userLocal.avatar = updateProfileBody.avatar;
@@ -88,6 +86,8 @@ class EditUserProfile extends Component {
       if (picture) {
         console.log('TCL: EditUserProfile -> updateProfile -> picture', picture);
         this.fileUploader.startUpload(picture);
+      } else {
+        this.updateProfileToServer(null);
       }
     } else {
       window.alert('You need to full fill');
@@ -175,6 +175,7 @@ class EditUserProfile extends Component {
                           <i className='lnr lnr-phone-handset' />
                           Gender:
                           <select
+                            value={this.state.gender}
                             className='form-control'
                             onChange={evt => {
                               this.setState({gender: evt.target.value});
@@ -193,7 +194,7 @@ class EditUserProfile extends Component {
                           cursor: 'pointer'
                         }}
                         onClick={this.updateProfile}>
-                        DONE
+                        UPDATE
                       </label>
                     </div>
                   </div>

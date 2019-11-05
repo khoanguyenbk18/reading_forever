@@ -10,7 +10,8 @@ import {
   rejectPost,
   createPost,
   getPostDetail,
-  createComment
+  createComment,
+  reportPost
 } from '../controllers/post_controller';
 import {checkTokenMiddleware} from '../middlewares/check_token_middleware';
 
@@ -26,4 +27,5 @@ postRouter.post('/accept', checkTokenMiddleware, acceptPost);
 postRouter.post('/reject', checkTokenMiddleware, rejectPost);
 postRouter.post('/createPost', checkTokenMiddleware, createPost);
 postRouter.post('/createComment', checkTokenMiddleware, createComment);
+postRouter.post('/report', checkTokenMiddleware, reportPost);
 export default postRouter;

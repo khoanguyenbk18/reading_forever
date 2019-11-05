@@ -22,6 +22,7 @@ export const REJECT_POST_PENDING = `/api/${API_VERSION}/${API_POSTS}/reject`;
 export const CREATE_POST = `/api/${API_VERSION}/${API_POSTS}/createPost`;
 export const CREATE_COMMENT = `/api/${API_VERSION}/${API_POSTS}/createComment`;
 export const GET_POST_DETAIL = postId => `/api/${API_VERSION}/${API_POSTS}/detail?postId=${postId}`;
+export const REPORT_POST = `/api/${API_VERSION}/${API_POSTS}/report`;
 
 //USER APIs
 export const REGISTER_API = `/api/${API_VERSION}/${API_USERS}/register`;

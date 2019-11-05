@@ -8,5 +8,6 @@ export const Path = {
   About: '/about',
   UserProfle: '/userprofile',
   EditProfile: '/editprofile',
-  CreatePost: '/createpost'
+  CreatePost: '/createpost',
+  SendReport: '/sendreport',
 };

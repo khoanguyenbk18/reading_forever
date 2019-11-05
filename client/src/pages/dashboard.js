@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-// import ModalFullScreen from '../components/modal_fullscreen'
 import Modal from 'react-modal';
 import moment from 'moment';
 import {getListPostPending, acceptPost, rejectPost} from '../urls/post_apis';

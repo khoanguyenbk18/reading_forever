@@ -105,14 +105,14 @@ class UserProfile extends Component {
           <div className='container'>
             <div className='main_title'>
               <h2>My Latest Posts</h2>
-              <p>Together We Share, Together We Develope.</p>
+              <p>Together We Share.</p>
             </div>
           </div>
           <div className='container'>
             {this.state.user.detail_posts[0] !== null ? (
               <div className='gallery_f_inner row imageGallery1'>{this.renderListPosts()}</div>
             ) : (
-              <div>There is no post</div>
+              <div className='main_title'>There is no post</div>
             )}
           </div>
         </section>
@@ -127,7 +127,7 @@ class UserProfile extends Component {
               {this.state.user.detail_notifications[0] !== null ? (
                 <div className='testi_slider owl-carousel'>{this.renderListNotifications()}</div>
               ) : (
-                <div>There is no notification.</div>
+                <div className='main_title'>There is no notification.</div>
               )}
             </div>
           </div>
