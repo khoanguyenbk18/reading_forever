@@ -21,9 +21,9 @@ class PostDetail extends Component {
   componentDidMount() {
     window.scrollTo(0, 0);
     const post = this.props.location.state.post;
-    console.log('TCL: PostDetail -> componentDidMount -> post', post);
     getPostDetail(post.id)
       .then(res => {
+        console.log('TCL: PostDetail -> componentDidMount -> res', res);
         this.setState({post: res.data}, () => {
           console.log(this.state);
         });
@@ -84,17 +84,23 @@ class PostDetail extends Component {
       });
   }
 
+  isExistedComment() {
+    return this.state.post.detail_comments[0] !== null;
+  }
+
   renderListComments() {
-    return this.state.post.detail_comments.map((item, index) => {
-      return (
-        <div className='item' key={index}>
-          <div className='testi_item'>
-            <p>{item.comment}</p>
-            <h4>Admin</h4>
+    if (this.isExistedComment()) {
+      return this.state.post.detail_comments.map((item, index) => {
+        return (
+          <div className='item' key={index}>
+            <div className='testi_item'>
+              <p>{item.comment}</p>
+              <h4>Admin</h4>
+            </div>
           </div>
-        </div>
-      );
-    });
+        );
+      });
+    }
   }
 
   render() {
@@ -170,7 +176,11 @@ class PostDetail extends Component {
           <div className='container'>
             <div className='testi_inner'>
               <h4 className='txt33 p-b-14'>Comments</h4>
-              <div className='testi_slider owl-carousel'>{this.renderListComments()}</div>
+              {this.isExistedComment() ? (
+                <div className='testi_slider owl-carousel'>{this.renderListComments()}</div>
+              ) : (
+                <div className='txt35 p-b-14'>There is no comnment</div>
+              )}
             </div>
           </div>
         </section>

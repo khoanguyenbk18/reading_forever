@@ -138,28 +138,6 @@ class Register extends Component {
           </div>
           <Form>
             <h3>Registration Form</h3>
-            {/* <div className='form-group'>
-              <Input
-                type='text'
-                placeholder='First Name'
-                className='form-control'
-                onChange={evt => {
-                  this.setState({first_name: evt.target.value});
-                }}
-                value={this.state.first_name}
-                // validations={[this.validateRequire]}
-              />
-              <Input
-                type='text'
-                placeholder='Last Name'
-                className='form-control'
-                onChange={evt => {
-                  this.setState({last_name: evt.target.value});
-                }}
-                // validations={[this.validateRequire]}
-                value={this.state.last_name}
-              />
-            </div> */}
             <div className='form-wrapper'>
               <Input
                 type='text'

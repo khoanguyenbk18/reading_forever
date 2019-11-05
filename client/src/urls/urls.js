@@ -26,3 +26,5 @@ export const GET_POST_DETAIL = postId => `/api/${API_VERSION}/${API_POSTS}/detai
 //USER APIs
 export const REGISTER_API = `/api/${API_VERSION}/${API_USERS}/register`;
 export const LOGIN_API = `/api/${API_VERSION}/${API_USERS}/login`;
+export const GET_PROFILE_API = `/api/${API_VERSION}/${API_USERS}/profile`;
+export const UPDATE_PROFILE_API = `/api/${API_VERSION}/${API_USERS}/editProfile`;

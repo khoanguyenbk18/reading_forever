@@ -23,7 +23,7 @@ class CreatePost extends Component {
       avatarURL: '',
       picture: null
     };
-    this.postComment = this.postComment.bind(this);
+    this.postComment = this.createPost.bind(this);
     this.onChangeHandler = this.onChangeHandler.bind(this);
     this.renderLocalImage = this.renderLocalImage.bind(this);
     this.renderCategory = this.renderCategory.bind(this);
@@ -91,7 +91,7 @@ class CreatePost extends Component {
     }, 5000);
   }
 
-  postComment() {
+  createPost() {
     //Upload image to firebase
     if (this.postIsFullFill()) {
       const {picture} = this.state;
@@ -208,7 +208,7 @@ class CreatePost extends Component {
             </div>
             <button
               type='button'
-              onClick={this.postComment}
+              onClick={this.createPost}
               className='btn3 flex-c-m size31 txt11 trans-0-4'>
               Post
             </button>

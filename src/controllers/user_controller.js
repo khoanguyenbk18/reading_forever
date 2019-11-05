@@ -112,14 +112,49 @@ export const getUserProfile = async (request, response, next) => {
       WHERE ${USERS_TABLE}.id = $1
       GROUP BY ${USERS_TABLE}.id;
     `,
-    [16]
-      // [userId]
+      [userId]
     );
 
     if (loginResult.rows[0]) {
       let userProfile = loginResult.rows[0];
       delete userProfile.hashed_password;
       return response.status(HttpStatusCode.OK).send(userProfile);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const editUserProfile = async (request, response, next) => {
+  try {
+    const db = await dbConnection.get();
+
+    const userId = request.decodedToken.id;
+    console.log('TCL: editUserProfile -> userId', userId);
+    const updateUserProfile = request.body;
+    console.log('TCL: editUserProfile -> updateUserProfile', updateUserProfile);
+
+    const updateProfileResult = await db.query(
+      `
+      UPDATE ${USERS_TABLE}
+      SET
+      username = $1,
+      email = $2,
+      avatar = $3,
+      gender = $4
+      WHERE id = $5
+    `,
+      [
+        updateUserProfile.username,
+        updateUserProfile.email,
+        updateUserProfile.avatar,
+        updateUserProfile.gender,
+        userId
+      ]
+    );
+
+    if (updateProfileResult.rows) {
+      return response.status(HttpStatusCode.OK).send('Update User Profile DONE');
     }
   } catch (error) {
     console.log(error);

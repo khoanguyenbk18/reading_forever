@@ -7,6 +7,7 @@ const Header = props => {
   const linkLoginPage = {pathname: Path.Login};
   const linkCreatePostPage = {pathname: Path.CreatePost};
   const linkUserProfile = {pathname: Path.UserProfle};
+  const linkEditUserProfile = {pathname: Path.EditProfile};
   const renderNav = () => {
     const HomeButton = (
       <li>
@@ -37,6 +38,11 @@ const Header = props => {
           <Link to={linkUserProfile}>Profile</Link>
         </li>
       );
+      const EditProfile = (
+        <li>
+          <Link to={linkEditUserProfile}>Edit Profile</Link>
+        </li>
+      );
 
       return (
         <ul className='main_menu'>
@@ -44,6 +50,7 @@ const Header = props => {
           {LogoutButton}
           {CreatePost}
           {Profile}
+          {EditProfile}
         </ul>
       );
     } else {
