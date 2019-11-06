@@ -10,4 +10,5 @@ export const Path = {
   EditProfile: '/editprofile',
   CreatePost: '/createpost',
   SendReport: '/sendreport',
+  Report: '/report'
 };

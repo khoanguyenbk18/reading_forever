@@ -3,6 +3,7 @@ export const BASE_URL_LOCAL = 'http://localhost:5000';
 const API_VERSION = 'v1';
 const API_POSTS = 'posts';
 const API_USERS = 'users';
+const API_ADMIN = 'admin';
 //POST APIs
 export const GET_LIST_POSTS_API = (pageNumber = 1) =>
   `/api/${API_VERSION}/${API_POSTS}/list?pageNumber=${pageNumber}`;
@@ -29,3 +30,6 @@ export const REGISTER_API = `/api/${API_VERSION}/${API_USERS}/register`;
 export const LOGIN_API = `/api/${API_VERSION}/${API_USERS}/login`;
 export const GET_PROFILE_API = `/api/${API_VERSION}/${API_USERS}/profile`;
 export const UPDATE_PROFILE_API = `/api/${API_VERSION}/${API_USERS}/editProfile`;
+
+//ADMIN APIs
+export const GET_LIST_REPORTS = `/api/${API_VERSION}/${API_ADMIN}/report/list`;

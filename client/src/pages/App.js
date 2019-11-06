@@ -14,6 +14,7 @@ import Dashboard from './dashboard';
 import UserProfile from './user_profile';
 import EditProfile from './edit_user_profile';
 import CreatePost from './create_post';
+import Report from './report';
 import {Path} from '../libs/path';
 import ScrollToTop from '../components/scroll_to_top';
 import AdminRoute from '../components/admin_route';
@@ -41,6 +42,7 @@ class App extends React.Component {
         <PrivateRoute path={Path.EditProfile} component={EditProfile} />
         <PrivateRoute path={Path.CreatePost} component={CreatePost} />
         <AdminRoute component={Dashboard} path={Path.Dashboard} />
+        <AdminRoute component={Report} path={Path.Report} />
         <Footer />
       </BrowserRouter>
     );
