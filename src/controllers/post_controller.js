@@ -10,11 +10,11 @@ import {PostStatusEnum} from '../lib/enums/post_status_enum';
 const PAGE_SIZE = 10;
 
 export async function getListPosts(request, response, next) {
+  const db = await dbConnection.get();
   try {
     const pageNumber = request.query.pageNumber ? request.query.pageNumber : 1;
     console.log('TCL: getListPosts -> pageNumber', pageNumber);
     const OFFSET = (pageNumber - 1) * PAGE_SIZE;
-    const db = await dbConnection.get();
     const result = await db.query(
       `
     SELECT p.*, u.username , c.name
@@ -251,12 +251,13 @@ export async function createPost(request, response, next) {
     post_creator_id: postCreator.id
   };
   try {
-    const resultInsertPost = db.query(
+    const resultInsertPost = await db.query(
       `
     INSERT INTO ${POSTS_TABLE}
     (title,image, author, publish_date, category, content, status, post_creator_id, created_date,document_vectors)
     VALUES
     ($1,$2,$3,$4,$5,$6,$7,$8,$9,to_tsvector($10)||to_tsvector($11)||to_tsvector($12))
+    RETURNING id
     `,
       [
         postInsertBody.title,
@@ -273,7 +274,20 @@ export async function createPost(request, response, next) {
         postInsertBody.content
       ]
     );
-    console.log('TCL: createPost -> resultInsertPost', resultInsertPost.rows);
+
+    const postId = resultInsertPost.rows[0].id;
+
+    // insert post to post_ids of users table
+    const insertPostToUserResult = db.query(
+      `
+    UPDATE ${USERS_TABLE}
+    SET post_ids = array_append(post_ids,$1)
+    WHERE ${USERS_TABLE}.id = $2`,
+      [postId, postInsertBody.post_creator_id]
+    );
+
+    console.log('TCL: createPost -> insertPostToUserResult', insertPostToUserResult);
+
     return response.status(HttpStatusCode.OK).send('Sending post successfully');
   } catch (error) {
     console.log(error);

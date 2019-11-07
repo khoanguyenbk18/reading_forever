@@ -5,8 +5,8 @@ import {validateRegisterRequest} from '../validators/member_validators';
 import {generateTokenAsync, hashPasswordAsync, isMatchPassword} from '../lib/encrytion/encryption';
 import {BEARER_AUTHENTICATION_SCHEMA} from '../lib/constants/system_config';
 export const register = async (request, response, next) => {
+  const db = await dbConnection.get();
   try {
-    const db = await dbConnection.get();
     let userRequestBody = request.body;
     userRequestBody.username = userRequestBody.username.toLowerCase();
     //VALIDATE BODY
@@ -62,8 +62,8 @@ export const register = async (request, response, next) => {
 };
 
 export const login = async (request, response, next) => {
+  const db = await dbConnection.get();
   try {
-    const db = await dbConnection.get();
     const loginRequestBody = request.body;
     const username = loginRequestBody.username;
     console.log('TCL: login -> username', username);
@@ -96,9 +96,8 @@ export const login = async (request, response, next) => {
 };
 
 export const getUserProfile = async (request, response, next) => {
+  const db = await dbConnection.get();
   try {
-    const db = await dbConnection.get();
-
     const userId = request.decodedToken.id;
 
     const loginResult = await db.query(
@@ -126,9 +125,8 @@ export const getUserProfile = async (request, response, next) => {
 };
 
 export const editUserProfile = async (request, response, next) => {
+  const db = await dbConnection.get();
   try {
-    const db = await dbConnection.get();
-
     const userId = request.decodedToken.id;
     console.log('TCL: editUserProfile -> userId', userId);
     const updateUserProfile = request.body;
