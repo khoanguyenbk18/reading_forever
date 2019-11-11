@@ -1,9 +1,7 @@
 import ItemPost from '../components/item_post';
-import Category from '../components/categories';
 import React, {Component} from 'react';
 import {
   getListPost,
-  getListCategories,
   getListMostPopular,
   getSearchListPost,
   getListPostByCategory

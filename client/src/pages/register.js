@@ -1,6 +1,4 @@
 import React, {Component} from 'react';
-import FormError from '../components/form_error';
-import {Link} from 'react-router-dom';
 import {register} from '../urls/user_apis';
 import Input from 'react-validation/build/input';
 import Form from 'react-validation/build/form';
@@ -134,7 +132,7 @@ class Register extends Component {
         style={{backgroundImage: 'url("images/bg-registration-form-1.jpg")'}}>
         <div className='inner'>
           <div className='image-holder'>
-            <img src='images/registration-form-1.jpg' />
+            <img alt='' src='images/registration-form-1.jpg' />
           </div>
           <Form>
             <h3>Registration Form</h3>

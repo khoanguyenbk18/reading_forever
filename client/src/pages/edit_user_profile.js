@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
-import {RoleEnum} from '../libs/enum';
-import {Link} from 'react-router-dom';
 import {Path} from '../libs/path';
 import FileUploader from 'react-firebase-file-uploader';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import {updateProfile} from '../urls/user_apis';
-import {isEmail, isEmpty, isURL} from 'validator';
+import {isEmail, isEmpty} from 'validator';
 class EditUserProfile extends Component {
   constructor(props) {
     super(props);
@@ -122,7 +120,7 @@ class EditUserProfile extends Component {
               <div className='banner_content'>
                 <div className='media'>
                   <div className='d-flex'>
-                    <img src={this.renderLocalImage()} />
+                    <img alt='' src={this.renderLocalImage()} />
                   </div>
                   <div className='media-body'>
                     <div className='personal_text'>

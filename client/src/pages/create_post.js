@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import FileUploader from 'react-firebase-file-uploader';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -172,7 +172,7 @@ class CreatePost extends Component {
                   </div>
                 </h5>
 
-                {this.state.picture ? <img src={this.renderLocalImage()} /> : null}
+                {this.state.picture ? <img alt='' src={this.renderLocalImage()} /> : null}
                 <FileUploader
                   accept='image/*'
                   name='avatar'

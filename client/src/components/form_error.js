@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 
 const FormError = props => {
   if (props.isHidden) {

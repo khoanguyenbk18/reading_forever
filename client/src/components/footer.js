@@ -1,5 +1,5 @@
 import React from 'react';
-function Footer({}) {
+function Footer() {
   return (
     <footer className='bg1'>
       <div className='container p-t-40 p-b-70'>
@@ -35,9 +35,7 @@ function Footer({}) {
               <span className='fs-13 color2 m-r-5'>
                 <i className='fa fa-twitter' aria-hidden='true' />
               </span>
-              <a href='#' className='txt15'>
-                Group 06
-              </a>
+              <p className='txt15'>Group 06</p>
               <p className='txt14 m-b-18'>
                 Reading Forever is a project of Software Engineering Practice Subject
               </p>
@@ -50,22 +48,19 @@ function Footer({}) {
         <div className='container'>
           <div className='flex-sb-m flex-w p-t-22 p-b-22'>
             <div className='p-t-5 p-b-5'>
-              <a href='#' className='fs-15 c-white'>
+              <p className='fs-15 c-white'>
                 <i className='fa fa-tripadvisor' aria-hidden='true' />
-              </a>
-              <a href='#' className='fs-15 c-white'>
+              </p>
+              <p className='fs-15 c-white'>
                 <i className='fa fa-facebook m-l-18' aria-hidden='true' />
-              </a>
-              <a href='#' className='fs-15 c-white'>
+              </p>
+              <p className='fs-15 c-white'>
                 <i className='fa fa-twitter m-l-18' aria-hidden='true' />
-              </a>
+              </p>
             </div>
             <div className='txt17 p-r-20 p-t-5 p-b-5'>
               Copyright © 2018 All rights reserved | This template is made with{' '}
-              <i className='fa fa-heart' /> by{' '}
-              <a href='https://colorlib.com' target='_blank'>
-                Colorlib
-              </a>
+              <i className='fa fa-heart' /> by <p>Colorlib</p>
             </div>
           </div>
         </div>

@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import moment from 'moment';
-import firebase from 'firebase';
 import Modal from 'react-modal';
 import {getPostDetail, createComment, reportPost} from '../urls/post_apis';
 

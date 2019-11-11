@@ -33,7 +33,7 @@ const dbConnection = () => {
           port: process.env.LOCAL_DB_PORT,
           password: process.env.LOCAL_DB_PASSWORD,
           database: process.env.LOCAL_DB_DATABASE,
-          ssl: true
+          ssl: false
         });
       }
 

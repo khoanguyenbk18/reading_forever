@@ -70,7 +70,7 @@ class Dashboard extends Component {
   updateListPendingPost(post) {
     if (this.state.listPostPending.length === 1) {
       //list empty --> get new 10 post
-      this.showToast()
+      this.showToast();
       this.getListPendingPostFromServer();
     } else {
       //remove current post
@@ -192,6 +192,7 @@ class Dashboard extends Component {
               </span>
             </h4>
             <img
+              alt=''
               className='pic-blo4 hov-img-zoom bo-rad-10 pos-relative'
               src={this.state.post.image}></img>
             <div className='txt32 flex-w p-b-24'>

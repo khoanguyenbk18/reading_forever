@@ -39,9 +39,9 @@ class UserProfile extends Component {
         <div className='col-lg-4 col-md-4 col-sm-6 brand manipul design print' key={index}>
           <div className='h_gallery_item'>
             <div className='g_img_item'>
-              <img className='img-fluid' src={item.image} alt />
+              <img className='img-fluid' src={item.image} alt='' />
               <Link className='light' to={linkPostDetail}>
-                <img src='images/gallery/icon.png' alt />
+                <img src='images/gallery/icon.png' alt='' />
               </Link>
             </div>
             <div className='g_item_text'>
@@ -77,7 +77,7 @@ class UserProfile extends Component {
               <div className='banner_content'>
                 <div className='media'>
                   <div className='d-flex'>
-                    <img src={this.state.user.avatar} alt />
+                    <img src={this.state.user.avatar} alt='' />
                   </div>
                   <div className='media-body'>
                     <div className='personal_text'>

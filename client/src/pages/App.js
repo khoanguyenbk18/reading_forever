@@ -3,7 +3,6 @@ import {BrowserRouter, Route} from 'react-router-dom';
 import ListPost from './list_post';
 import ListPostByCategory from './list_post_by_category';
 import PostDetail from './post_detail';
-import About from './about';
 
 import Header from '../components/header';
 import SideBar from '../components/sidebar';
@@ -22,9 +21,6 @@ import PrivateRoute from '../components/private_route';
 
 import '../services/firebase';
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     return (
@@ -35,7 +31,6 @@ class App extends React.Component {
         <Route exact path={Path.LandingPage} component={ListPost} />
         <Route path={Path.CategoryPage} component={ListPostByCategory} />
         <Route path={Path.Detail} component={PostDetail} />
-        <Route path={Path.About} component={About} />
         <Route path={Path.Register} component={Register} />
         <Route path={Path.Login} component={Login} />
         <PrivateRoute path={Path.UserProfle} component={UserProfile} />
