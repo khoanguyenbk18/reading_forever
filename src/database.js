@@ -9,6 +9,7 @@ export const CATEGORIES_TABLE = 'categories';
 export const NOTIFICATION_TABLE = 'notifications';
 export const REPORT_TABLE = 'reports';
 
+
 const isProduction = true;
 
 //Singleton
