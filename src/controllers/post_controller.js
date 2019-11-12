@@ -278,7 +278,7 @@ export async function createPost(request, response, next) {
     const postId = resultInsertPost.rows[0].id;
 
     // insert post to post_ids of users table
-    const insertPostToUserResult = db.query(
+    const insertPostToUserResult = await db.query(
       `
     UPDATE ${USERS_TABLE}
     SET post_ids = array_append(post_ids,$1)

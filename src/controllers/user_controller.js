@@ -43,10 +43,12 @@ export const register = async (request, response, next) => {
     '${userRequestBody.gender}',
     ${userRequestBody.role}) RETURNING ${USERS_TABLE}.id;`
     );
+    console.log("TCL: register -> idNewMember", idNewMember)
 
+    console.log("TCL: register -> idNewMember.rows[0].id", idNewMember.rows[0].id)
     let registedMember = {
-      id: idNewMember.rows.id,
-      ...userRequestBody
+      ...userRequestBody,
+      id: idNewMember.rows[0].id,
     };
 
     if (registedMember.hasOwnProperty('hashed_password')) {
@@ -54,6 +56,7 @@ export const register = async (request, response, next) => {
     }
 
     const encryptedToken = await generateTokenAsync(registedMember.id, registedMember);
+    console.log("TCL: register -> encryptedToken", encryptedToken)
     registedMember.api_token = BEARER_AUTHENTICATION_SCHEMA + ' ' + encryptedToken;
     return response.status(HttpStatusCode.OK).send(registedMember);
   } catch (error) {
@@ -84,6 +87,7 @@ export const login = async (request, response, next) => {
       if (isMatch) {
         const loginMember = loginResult.rows[0];
         const encryptedToken = await generateTokenAsync(loginMember.id, loginMember);
+        console.log("TCL: login -> encryptedToken", encryptedToken)
         loginMember.api_token = BEARER_AUTHENTICATION_SCHEMA + ' ' + encryptedToken;
         return response.status(HttpStatusCode.OK).send(loginResult.rows);
       } else {
