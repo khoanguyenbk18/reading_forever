@@ -232,8 +232,8 @@ class Dashboard extends Component {
                     <th className='column3'>Title</th>
                     <th className='column4'>Author</th>
                     <th className='column5'>Post Creator</th>
-                    <th className='column6'>Reject</th>
-                    <th className='column7'>Accept</th>
+                    <th className='column6'>Accept</th>
+                    <th className='column7'>Reject</th>
                   </tr>
                 </thead>
                 <tbody>{this.renderPendingPosts()}</tbody>

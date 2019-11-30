@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter, Route} from 'react-router-dom';
+import {HashRouter, Route} from 'react-router-dom';
 import ListPost from './list_post';
 import ListPostByCategory from './list_post_by_category';
 import PostDetail from './post_detail';
@@ -24,7 +24,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <BrowserRouter>
+      <HashRouter>
         <ScrollToTop />
         <Header listPageHide={['/dashboard']} />
         <SideBar />
@@ -39,7 +39,7 @@ class App extends React.Component {
         <AdminRoute component={Dashboard} path={Path.Dashboard} />
         <AdminRoute component={Report} path={Path.Report} />
         <Footer />
-      </BrowserRouter>
+      </HashRouter>
     );
   }
 }
