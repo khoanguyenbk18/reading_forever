@@ -1,5 +1,6 @@
 import userRouter from './routes/users_router';
 import postRouter from './routes/posts_router';
+import adminRouter from './routes/admin_router';
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -18,6 +19,7 @@ app.use(
 //routes
 app.use('/api/v1/posts', postRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/admin', adminRouter);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));

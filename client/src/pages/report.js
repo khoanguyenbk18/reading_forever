@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import Modal from 'react-modal';
 import moment from 'moment';
-import {getListPostPending, acceptPost, rejectPost} from '../urls/post_apis';
+import {getListReports} from '../urls/admin_apis';
+import {getPostDetail} from '../urls/post_apis';
 
 const customStyles = {
   content: {
@@ -14,38 +15,38 @@ const customStyles = {
   }
 };
 
-class Dashboard extends Component {
+class Report extends Component {
   constructor(props) {
     super(props);
     this.state = {
       modalIsOpen: false,
-      listPostPending: [],
+      listReport: [],
       post: null
     };
-    this.renderPendingPosts = this.renderPendingPosts.bind(this);
-    this.onClickAccept = this.onClickAccept.bind(this);
-    this.onClickReject = this.onClickReject.bind(this);
+    this.renderPendingPosts = this.renderReports.bind(this);
 
     this.openModal = this.openModal.bind(this);
     this.afterOpenModal = this.afterOpenModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.renderModal = this.renderModal.bind(this);
-    this.getListPendingPostFromServer = this.getListPendingPostFromServer.bind(this);
+    this.getListPendingPostFromServer = this.getListReportFromServer.bind(this);
     this.updateListPendingPost = this.updateListPendingPost.bind(this);
     this.showToast = this.showToast.bind(this);
   }
 
-  getListPendingPostFromServer() {
-    getListPostPending()
+  getListReportFromServer() {
+    getListReports()
       .then(res => {
         console.log('TCL: Dashboard -> componentDidMount -> res', res);
-        this.setState({listPostPending: res.data.data});
+        this.setState({listReport: res.data.data});
       })
-      .catch(err => {});
+      .catch(err => {
+        console.log('TCL: Report -> getListPendingPostFromServer -> err', err);
+      });
   }
 
   componentDidMount() {
-    this.getListPendingPostFromServer();
+    this.getListReportFromServer();
   }
 
   showToast() {
@@ -56,42 +57,32 @@ class Dashboard extends Component {
     }, 5000);
   }
 
-  onClickAccept(post) {
-    acceptPost(post.id)
-      .then(res => {
-        this.updateListPendingPost(post);
-        console.log('TCL: Dashboard -> onClickAccept -> res', res);
-      })
-      .catch(err => {
-        console.log('TCL: Dashboard -> onClickAccept -> err', err);
-      });
+  onClickRemovePermantely(post) {
+    const re = window.confirm('are you sure you want to delete permantely this post');
+    if (re === true) {
+      console.log('remove post');
+    } else {
+      console.log('do nothing');
+    }
   }
 
   updateListPendingPost(post) {
-    if (this.state.listPostPending.length === 1) {
+    if (this.state.listReport.length === 1) {
       //list empty --> get new 10 post
       this.showToast();
-      this.getListPendingPostFromServer();
+      this.getListReportFromServer();
     } else {
       //remove current post
       this.setState({
-        listPostPending: this.state.listPostPending.filter(item => item.id !== post.id)
+        listPostPending: this.state.listReport.filter(item => item.id !== post.id)
       });
     }
   }
 
-  onClickReject(post) {
-    rejectPost(post.id)
-      .then(res => {
-        this.updateListPendingPost(post);
-      })
-      .catch(err => {
-        console.log('TCL: Dashboard -> onClickAccept -> err', err);
-      });
-  }
+  onClickReject(post) {}
 
-  renderPendingPosts() {
-    return this.state.listPostPending.map((item, index) => {
+  renderReports() {
+    return this.state.listReport.map((item, index) => {
       return (
         <tr
           key={index}
@@ -100,12 +91,11 @@ class Dashboard extends Component {
             console.log('TCL: Dashboard -> renderPendingPosts -> e.currentTarget', e.currentTarget);
             this.openModal(item);
           }}>
-          <td className='column1'>{moment(item.created_date).format('DD-MM-YYYY')}</td>
-          <td className='column2'>{item.category_name}</td>
-          <td className='column3'>{item.title}</td>
-          <td className='column4'>{item.author}</td>
-          <td className='column5'>{item.post_creator} </td>
-          <td className='column6'>
+          <td className='column1'>{item.id}</td>
+          <td className='column2'>{item.post_id}</td>
+          <td className='column3'>{item.content}</td>
+          <td className='column4'>{item.reporter_id}</td>
+          <td className='column5'>
             <button
               type='button'
               onClick={e => {
@@ -114,19 +104,10 @@ class Dashboard extends Component {
                 if (e.target === e.currentTarget) {
                   // handle
                   console.log(e.currentTarget);
-                  this.onClickAccept(item);
+                  this.onClickRemovePermantely(item);
                 }
               }}>
-              Accept
-            </button>
-          </td>
-          <td className='column7'>
-            <button
-              type='button'
-              onClick={() => {
-                this.onClickReject(item);
-              }}>
-              Reject
+              DELETE
             </button>
           </td>
         </tr>
@@ -135,13 +116,17 @@ class Dashboard extends Component {
   }
 
   openModal(item) {
-    this.setState({modalIsOpen: true, post: item});
+    getPostDetail(item.post_id)
+      .then(res => {
+        console.log('TCL: Report -> openModal -> res', res);
+        this.setState({modalIsOpen: true, post: res.data});
+      })
+      .catch(err => {
+        console.log('TCL: Report -> openModal -> err', err);
+      });
   }
 
-  afterOpenModal() {
-    // references are now sync'd and can be accessed.
-    // this.subtitle.style.color = '#f00';
-  }
+  afterOpenModal() {}
 
   closeModal() {
     this.setState({modalIsOpen: false});
@@ -163,10 +148,6 @@ class Dashboard extends Component {
   renderDate() {
     const date = moment(this.state.post.created_date).format('MMM, DD YYYY');
     return date;
-  }
-
-  postComment() {
-    console.log('Post Comment here');
   }
 
   renderModal() {
@@ -222,24 +203,33 @@ class Dashboard extends Component {
       <div>
         {this.state.post !== null ? this.renderModal() : null}
         <div className='container-table100'>
-          <div>
-            <div className='table100'>
-              <table>
-                <thead>
-                  <tr className='table100-head'>
-                    <th className='column1'>Date created</th>
-                    <th className='column2'>Category</th>
-                    <th className='column3'>Title</th>
-                    <th className='column4'>Author</th>
-                    <th className='column5'>Post Creator</th>
-                    <th className='column6'>Reject</th>
-                    <th className='column7'>Accept</th>
-                  </tr>
-                </thead>
-                <tbody>{this.renderPendingPosts()}</tbody>
-              </table>
-            </div>
+          <div className='search-sidebar2 size12 bo2 pos-relative'>
+            <input
+              className='input-search-sidebar2 txt10 p-l-20 p-r-55'
+              type='text'
+              name='search'
+              placeholder='Search'
+              ref={this.inputSearch}
+            />
+            <button
+              className='btn-search-sidebar2 flex-c-m ti-search trans-0-4'
+              type='button'
+              onClick={this.onSearchPost}
+            />
           </div>
+
+          <table>
+            <thead>
+              <tr className='table100-head'>
+                <th className='column1'>Report ID</th>
+                <th className='column2'>Post ID</th>
+                <th className='column3'>Report Content</th>
+                <th className='column4'>Reporter ID</th>
+                <th className='column5'></th>
+              </tr>
+            </thead>
+            <tbody>{this.renderReports()}</tbody>
+          </table>
         </div>
         <div id='toast'>
           <div id='img'>...</div>
@@ -249,4 +239,4 @@ class Dashboard extends Component {
     );
   }
 }
-export default Dashboard;
+export default Report;

@@ -4,11 +4,13 @@ import 'dotenv/config';
 
 export const USERS_TABLE = 'users';
 export const POSTS_TABLE = 'posts';
-export const COMMENT_TABLE = 'comments';
+export const COMMENTS_TABLE = 'comments';
 export const CATEGORIES_TABLE = 'categories';
 export const NOTIFICATION_TABLE = 'notifications';
+export const REPORT_TABLE = 'reports';
 
-const isProduction = false;
+
+const isProduction = true;
 
 //Singleton
 const dbConnection = () => {

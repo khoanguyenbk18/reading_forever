@@ -4,7 +4,6 @@ import {RoleEnum} from '../libs/enum';
 const AdminRoute = ({component: Component, ...rest}) => {
   const isAdmin = () => {
     const user = JSON.parse(localStorage.getItem('user'));
-    console.log('TCL: isLogin -> user', user);
     if (user) {
       if (user.role === RoleEnum.ADMIN) return true;
     }

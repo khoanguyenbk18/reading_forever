@@ -6,6 +6,9 @@ export const Path = {
   Login: '/login',
   Dashboard: '/dashboard',
   About: '/about',
-  UserProfle: '/userProfile',
-  CreatePost: '/createPost'
+  UserProfle: '/userprofile',
+  EditProfile: '/editprofile',
+  CreatePost: '/createpost',
+  SendReport: '/sendreport',
+  Report: '/report'
 };

@@ -1,16 +1,18 @@
-import jwt, {TokenExpiredError} from 'jsonwebtoken';
-import HttpStatusCode from 'http-status-codes';
+import jwt, { TokenExpiredError } from "jsonwebtoken";
+import HttpStatusCode from "http-status-codes";
 import {
   AUTHORIZATION_HEADER,
   BEARER_AUTHENTICATION_SCHEMA,
   SECRET_JWT_KEY
-} from '../lib/constants/system_config';
+} from "../lib/constants/system_config";
 
 export const checkTokenMiddleware = async (request, response, next) => {
   try {
     let token = request.headers[AUTHORIZATION_HEADER];
     if (!token) {
-      return response.status(HttpStatusCode.BAD_GATEWAY).send('Token is invalid');
+      return response
+        .status(HttpStatusCode.BAD_GATEWAY)
+        .send("Token is invalid");
     }
 
     if (token.startsWith(BEARER_AUTHENTICATION_SCHEMA)) {
@@ -20,26 +22,33 @@ export const checkTokenMiddleware = async (request, response, next) => {
     if (token) {
       await jwt.verify(token, SECRET_JWT_KEY, (error, decodedToken) => {
         if (error) {
-          return response.status(HttpStatusCode.BAD_GATEWAY).send('Token is invalid');
+          return response
+            .status(HttpStatusCode.BAD_GATEWAY)
+            .send("Token is invalid");
         }
+        console.log("TCL: checkTokenMiddleware -> decodedToken", decodedToken);
         request.decodedToken = {
           id: decodedToken.id,
           username: decodedToken.username,
           avatar: decodedToken.avatar,
           email: decodedToken.email,
-          role: decodedToken.role,
-          dob: decodedToken.dob
+          role: decodedToken.role
         };
         next();
       });
     }
   } catch (error) {
-    console.log('TCL: error', error);
+    console.log("TCL: error", error);
   }
 };
 
 class Error {
-  constructor(name = '', statusCode = 500, errorCode = 9999, errorMessage = '') {
+  constructor(
+    name = "",
+    statusCode = 500,
+    errorCode = 9999,
+    errorMessage = ""
+  ) {
     this.type = name;
     this.status_code = statusCode;
     this.error_code = errorCode;

@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
 import {login} from '../urls/user_apis';
 class Login extends Component {
   constructor(props) {
@@ -34,7 +33,7 @@ class Login extends Component {
         style={{backgroundImage: 'url("images/bg-registration-form-1.jpg")'}}>
         <div className='inner'>
           <div className='image-holder'>
-            <img src='images/registration-form-1.jpg' />
+            <img alt='' src='images/registration-form-1.jpg' />
           </div>
           <form>
             <h3>Login Form</h3>

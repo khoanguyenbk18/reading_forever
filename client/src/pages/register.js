@@ -1,6 +1,4 @@
 import React, {Component} from 'react';
-import FormError from '../components/form_error';
-import {Link} from 'react-router-dom';
 import {register} from '../urls/user_apis';
 import Input from 'react-validation/build/input';
 import Form from 'react-validation/build/form';
@@ -72,6 +70,7 @@ import {isEmail, isEmpty, contains} from 'validator';
       isEmpty(this.state.password) ||
       isEmpty(this.state.confirm_password)
     ) {
+<<<<<<< HEAD
        window.alert('Please fill out the form');
        return;
      }
@@ -224,3 +223,143 @@ import {isEmail, isEmpty, contains} from 'validator';
    }
  }
  export default Register;
+=======
+      window.alert('Please fill out the form');
+      return;
+    }
+
+    if (contains(this.state.user_name, ' ')) {
+      window.alert('Username not contains spaces');
+      return;
+    }
+
+    if (!isEmail(this.state.email)) {
+      window.alert('Email is not valid');
+      return;
+    }
+
+    if (isEmpty(this.state.gender)) {
+      window.alert('Please select your gender');
+      return;
+    }
+
+    if (this.state.password !== this.state.confirm_password) {
+      window.alert('Confirm Password is not correct');
+      return;
+    }
+
+    //Register Member
+    const registerBody = {
+      username: this.state.user_name,
+      password: this.state.password,
+      avatar: '',
+      email: this.state.email,
+      gender: this.state.gender
+    };
+
+    register(registerBody)
+      .then(res => {
+        console.log('TCL: Register -> onRegister -> res', res);
+        localStorage.setItem('user', JSON.stringify(res.data));
+        this.props.history.push('/');
+      })
+      .catch(err => {
+        window.alert(err.response.data);
+      });
+  }
+
+  // checkInputFirstNameValidation(event) {
+  //   const {isInputValid, errorMessage} = validateInput(this.state.first_name);
+  // }
+
+  render() {
+    return (
+      <div
+        className='wrapper'
+        style={{backgroundImage: 'url("images/bg-registration-form-1.jpg")'}}>
+        <div className='inner'>
+          <div className='image-holder'>
+            <img alt='' src='images/registration-form-1.jpg' />
+          </div>
+          <Form>
+            <h3>Registration Form</h3>
+            <div className='form-wrapper'>
+              <Input
+                type='text'
+                placeholder='Username'
+                className='form-control'
+                onChange={evt => {
+                  console.log('TCL: Register -> render -> value', evt.target.value);
+                  this.setState({user_name: evt.target.value});
+                }}
+                value={this.state.user_name}
+                validations={[this.validateContainsSpace]}
+              />
+              <i className='zmdi zmdi-account' />
+            </div>
+            <div className='form-wrapper'>
+              <Input
+                type='text'
+                placeholder='Email Address'
+                className='form-control'
+                onChange={evt => {
+                  this.setState({email: evt.target.value});
+                }}
+                value={this.state.email}
+                validations={[this.validateEmail]}
+              />
+              <i className='zmdi zmdi-email' />
+            </div>
+            <div className='form-wrapper'>
+              <select
+                name
+                id
+                className='form-control'
+                onChange={evt => {
+                  this.setState({gender: evt.target.value});
+                }}>
+                <option value disabled selected>
+                  Gender
+                </option>
+                <option value='Male'>Male</option>
+                <option value='Female'>Female</option>
+              </select>
+              <i className='zmdi zmdi-caret-down' style={{fontSize: 17}} />
+            </div>
+            <div className='form-wrapper'>
+              <Input
+                type='password'
+                placeholder='Password'
+                className='form-control'
+                onChange={evt => {
+                  this.setState({password: evt.target.value});
+                }}
+                value={this.state.password}
+              />
+              <i className='zmdi zmdi-lock' />
+            </div>
+            <div className='form-wrapper'>
+              <Input
+                type='password'
+                placeholder='Confirm Password'
+                className='form-control'
+                onChange={evt => {
+                  this.setState({confirm_password: evt.target.value});
+                }}
+                value={this.state.confirm_password}
+                validations={[this.validateConfirmPassword]}
+              />
+              <i className='zmdi zmdi-lock' />
+            </div>
+            <button type='button' onClick={this.onRegister}>
+              Register
+              <i className='zmdi zmdi-arrow-right' />
+            </button>
+          </Form>
+        </div>
+      </div>
+    );
+  }
+}
+export default Register;
+>>>>>>> fa8fd36ebbaa7a572e7e1aa7f1816fd99ff32e03

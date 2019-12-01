@@ -165,7 +165,7 @@ button {
   width: 164px;
   height: 51px;
   margin: auto;
-  margin-top: 40px;
+  /* margin-top: 40px; */
   cursor: pointer;
   display: flex;
   align-items: center;

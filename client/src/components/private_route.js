@@ -1,6 +1,5 @@
 import React from 'react';
 import {Route, Redirect} from 'react-router-dom';
-import {RoleEnum} from '../libs/enum';
 const PrivateRoute = ({component: Component, ...rest}) => {
   const isLogin = () => {
     const user = JSON.parse(localStorage.getItem('user'));

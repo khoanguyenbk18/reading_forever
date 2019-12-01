@@ -5,8 +5,8 @@ import {validateRegisterRequest} from '../validators/member_validators';
 import {generateTokenAsync, hashPasswordAsync, isMatchPassword} from '../lib/encrytion/encryption';
 import {BEARER_AUTHENTICATION_SCHEMA} from '../lib/constants/system_config';
 export const register = async (request, response, next) => {
+  const db = await dbConnection.get();
   try {
-    const db = await dbConnection.get();
     let userRequestBody = request.body;
     userRequestBody.username = userRequestBody.username.toLowerCase();
     //VALIDATE BODY
@@ -43,10 +43,12 @@ export const register = async (request, response, next) => {
     '${userRequestBody.gender}',
     ${userRequestBody.role}) RETURNING ${USERS_TABLE}.id;`
     );
+    console.log("TCL: register -> idNewMember", idNewMember)
 
+    console.log("TCL: register -> idNewMember.rows[0].id", idNewMember.rows[0].id)
     let registedMember = {
-      id: idNewMember.rows.id,
-      ...userRequestBody
+      ...userRequestBody,
+      id: idNewMember.rows[0].id,
     };
 
     if (registedMember.hasOwnProperty('hashed_password')) {
@@ -54,6 +56,7 @@ export const register = async (request, response, next) => {
     }
 
     const encryptedToken = await generateTokenAsync(registedMember.id, registedMember);
+    console.log("TCL: register -> encryptedToken", encryptedToken)
     registedMember.api_token = BEARER_AUTHENTICATION_SCHEMA + ' ' + encryptedToken;
     return response.status(HttpStatusCode.OK).send(registedMember);
   } catch (error) {
@@ -62,8 +65,8 @@ export const register = async (request, response, next) => {
 };
 
 export const login = async (request, response, next) => {
+  const db = await dbConnection.get();
   try {
-    const db = await dbConnection.get();
     const loginRequestBody = request.body;
     const username = loginRequestBody.username;
     console.log('TCL: login -> username', username);
@@ -84,6 +87,7 @@ export const login = async (request, response, next) => {
       if (isMatch) {
         const loginMember = loginResult.rows[0];
         const encryptedToken = await generateTokenAsync(loginMember.id, loginMember);
+        console.log("TCL: login -> encryptedToken", encryptedToken)
         loginMember.api_token = BEARER_AUTHENTICATION_SCHEMA + ' ' + encryptedToken;
         return response.status(HttpStatusCode.OK).send(loginResult.rows);
       } else {
@@ -96,9 +100,8 @@ export const login = async (request, response, next) => {
 };
 
 export const getUserProfile = async (request, response, next) => {
+  const db = await dbConnection.get();
   try {
-    const db = await dbConnection.get();
-
     const userId = request.decodedToken.id;
 
     const loginResult = await db.query(
@@ -112,14 +115,48 @@ export const getUserProfile = async (request, response, next) => {
       WHERE ${USERS_TABLE}.id = $1
       GROUP BY ${USERS_TABLE}.id;
     `,
-    [16]
-      // [userId]
+      [userId]
     );
 
     if (loginResult.rows[0]) {
       let userProfile = loginResult.rows[0];
       delete userProfile.hashed_password;
       return response.status(HttpStatusCode.OK).send(userProfile);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const editUserProfile = async (request, response, next) => {
+  const db = await dbConnection.get();
+  try {
+    const userId = request.decodedToken.id;
+    console.log('TCL: editUserProfile -> userId', userId);
+    const updateUserProfile = request.body;
+    console.log('TCL: editUserProfile -> updateUserProfile', updateUserProfile);
+
+    const updateProfileResult = await db.query(
+      `
+      UPDATE ${USERS_TABLE}
+      SET
+      username = $1,
+      email = $2,
+      avatar = $3,
+      gender = $4
+      WHERE id = $5
+    `,
+      [
+        updateUserProfile.username,
+        updateUserProfile.email,
+        updateUserProfile.avatar,
+        updateUserProfile.gender,
+        userId
+      ]
+    );
+
+    if (updateProfileResult.rows) {
+      return response.status(HttpStatusCode.OK).send('Update User Profile DONE');
     }
   } catch (error) {
     console.log(error);
