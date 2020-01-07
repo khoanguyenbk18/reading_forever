@@ -7,6 +7,7 @@ const Header = props => {
   const linkLoginPage = {pathname: Path.Login};
   const linkCreatePostPage = {pathname: Path.CreatePost};
   const linkUserProfile = {pathname: Path.UserProfle};
+  const user = JSON.parse(localStorage.getItem('user'));
   const renderNav = () => {
     const HomeButton = (
       <li>
@@ -34,11 +35,11 @@ const Header = props => {
 
       const Profile = (
         <li>
-          <Link to={linkUserProfile}>Profile</Link>
+          <Link to={linkUserProfile}>{user.username}</Link>
         </li>
       );
-
       return (
+        
         <ul className='main_menu'>
           {HomeButton}
           {LogoutButton}

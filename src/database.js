@@ -10,7 +10,7 @@ export const NOTIFICATION_TABLE = 'notifications';
 export const REPORT_TABLE = 'reports';
 
 
-const isProduction = true;
+const isProduction = false;
 
 //Singleton
 const dbConnection = () => {
