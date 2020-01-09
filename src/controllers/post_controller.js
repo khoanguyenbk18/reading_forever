@@ -12,7 +12,8 @@ const PAGE_SIZE = 10;
 export async function getListPosts(request, response, next) {
   const db = await dbConnection.get();
   try {
-    const pageNumber = request.query.pageNumber ? request.query.pageNumber : 1;
+    console.log('TCL: getListPosts -> pageNumber0', request.query);
+    const pageNumber = request.query.pageNumber ;//? request.query.pageNumber : 1;
     console.log('TCL: getListPosts -> pageNumber', pageNumber);
     const OFFSET = (pageNumber - 1) * PAGE_SIZE;
     const result = await db.query(
@@ -26,11 +27,10 @@ export async function getListPosts(request, response, next) {
     LIMIT ${PAGE_SIZE} OFFSET ${OFFSET}`,
       [PostStatusEnum.ACCEPT]
     );
-
+    
     const rowcountResult = await db.query(`
     SELECT COUNT(*) FROM ${POSTS_TABLE}`);
     const rowCount = rowcountResult.rows[0].count;
-
     result.rows.map(post => {
       if (post.hasOwnProperty('name')) {
         post.category_name = post.name;
@@ -40,8 +40,7 @@ export async function getListPosts(request, response, next) {
     });
     let responseData = {
       data: result.rows,
-      pageNumber: pageNumber,
-      totalPage: rowCount / PAGE_SIZE
+      totalPage: Math.ceil(rowCount / PAGE_SIZE)
     };
 
     return response.status(HttpStatusCode.OK).send(responseData);
@@ -62,7 +61,7 @@ export async function getListPostsPending(request, response, next) {
     INNER JOIN ${CATEGORIES_TABLE} c ON p.category = c.id
     WHERE p.status = $1
     ORDER BY p.created_date DESC
-    LIMIT 10`,
+    `,
       [PostStatusEnum.PENDING]
     );
 
@@ -300,27 +299,32 @@ export async function getPostDetail(request, response, next) {
   console.log('TCL: getPostDetail -> postId', postId);
   try {
     const resultPostDetail = await db.query(
-      `
-    SELECT
-    ${POSTS_TABLE}.id,
-    ${POSTS_TABLE}.title,
-    ${POSTS_TABLE}.image,
-    ${POSTS_TABLE}.content,
-    ${POSTS_TABLE}.author,
-    ${POSTS_TABLE}.publish_date,
-    ${POSTS_TABLE}.category,
-    ${POSTS_TABLE}.views_count,
-    ${POSTS_TABLE}.status,
-    ${POSTS_TABLE}.post_creator_id,
-    ${POSTS_TABLE}.created_date,
-    ${USERS_TABLE}.username,
-    array_to_json(array_agg(${COMMENTS_TABLE}.*)) as detail_comments
-    FROM ${POSTS_TABLE}
-    LEFT JOIN ${COMMENTS_TABLE} ON ${COMMENTS_TABLE}.id = ANY(${POSTS_TABLE}.comment_ids)
-    LEFT JOIN ${USERS_TABLE} ON ${USERS_TABLE}.id = ${POSTS_TABLE}.post_creator_id
-    WHERE ${POSTS_TABLE}.id = $1
-    GROUP BY ${POSTS_TABLE}.id, ${USERS_TABLE}.id
-    `,
+    `
+    SELECT 
+      ${POSTS_TABLE}.id,
+      ${POSTS_TABLE}.title,
+      ${POSTS_TABLE}.image,
+      ${POSTS_TABLE}.content,
+      ${POSTS_TABLE}.author,
+      ${POSTS_TABLE}.publish_date,
+      ${POSTS_TABLE}.category,
+      ${POSTS_TABLE}.views_count,
+      ${POSTS_TABLE}.status,
+      ${POSTS_TABLE}.post_creator_id,
+      ${POSTS_TABLE}.created_date,
+      ${USERS_TABLE}.username,
+	    cmt.detail_comments
+	  FROM ${POSTS_TABLE}
+	    LEFT JOIN (SELECT ${POSTS_TABLE}.id,
+        array_to_json(array_agg(${COMMENTS_TABLE}.*)) as detail_comments
+	      FROM ${POSTS_TABLE}
+        LEFT JOIN ${COMMENTS_TABLE} ON ${COMMENTS_TABLE}.id = ANY(${POSTS_TABLE}.comment_ids)
+        GROUP BY ${POSTS_TABLE}.id) AS cmt 
+        ON ${POSTS_TABLE}.id = cmt.id
+	    LEFT JOIN ${USERS_TABLE} ON ${USERS_TABLE}.id = ${POSTS_TABLE}.post_creator_id
+	    where ${POSTS_TABLE}.id = $1
+    `
+    ,
       [postId]
     );
 
@@ -342,10 +346,18 @@ export async function createComment(request, response, next) {
   console.log('TCL: createComment -> commentRequestBody', commentRequestBody);
   let commentator = request.decodedToken;
   console.log('TCL: createComment -> commentator', commentator);
-
+  var commentatorID = await db.query(
+    `
+    SELECT id 
+    FROM ${USERS_TABLE}
+    WHERE username = $1
+    `, [commentRequestBody.commentator_username]
+  ) 
+  var cmtatorID = commentatorID.rows[0].id
+  console.log('dkfuu-> ',  commentator.id)
   const commentInsertBody = {
-    commentator_username: commentator.username,
-    commentator_id: commentator.id,
+    commentator_username: commentRequestBody.commentator_username,
+    commentator_id: cmtatorID,
     post_id: commentRequestBody.postId,
     comment: commentRequestBody.comment
   };

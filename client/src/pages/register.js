@@ -90,7 +90,7 @@ import {isEmail, isEmpty, contains} from 'validator';
     }
 
     if (this.state.password !== this.state.confirm_password) {
-      window.alert('Confirm Password is not correct');
+      window.alert('Check your username and password');
       return;
     }
 
@@ -106,7 +106,7 @@ import {isEmail, isEmpty, contains} from 'validator';
     register(registerBody)
       .then(res => {
         console.log('TCL: Register -> onRegister -> res', res);
-        localStorage.setItem('user', JSON.stringify(res.data));
+        // localStorage.setItem('user', JSON.stringify(res.data));
         this.props.history.push('/');
       })
       .catch(err => {

@@ -28,7 +28,8 @@ const dbConnection = () => {
           ssl: true
         });
       } else {
-        pool = new Pool({
+        
+        pool = new Pool({        
           user: process.env.LOCAL_DB_USER,
           host: process.env.LOCAL_DB_HOST,
           port: process.env.LOCAL_DB_PORT,

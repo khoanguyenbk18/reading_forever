@@ -8,5 +8,4 @@ userRouter.post('/register', register);
 userRouter.post('/login', login);
 userRouter.get('/profile', checkTokenMiddleware, getUserProfile);
 userRouter.put('/editProfile', checkTokenMiddleware, editUserProfile);
-
 export default userRouter;

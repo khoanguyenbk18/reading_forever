@@ -10,7 +10,6 @@ import Footer from '../components/footer';
 import Register from './register';
 import Login from './login';
 import Dashboard from './dashboard';
-import UserProfile from './user_profile';
 import EditProfile from './edit_user_profile';
 import CreatePost from './create_post';
 import Report from './report';
@@ -21,7 +20,6 @@ import PrivateRoute from '../components/private_route';
 
 import '../services/firebase';
 class App extends React.Component {
-
   render() {
     return (
       <HashRouter>
@@ -33,7 +31,6 @@ class App extends React.Component {
         <Route path={Path.Detail} component={PostDetail} />
         <Route path={Path.Register} component={Register} />
         <Route path={Path.Login} component={Login} />
-        <PrivateRoute path={Path.UserProfle} component={UserProfile} />
         <PrivateRoute path={Path.EditProfile} component={EditProfile} />
         <PrivateRoute path={Path.CreatePost} component={CreatePost} />
         <AdminRoute component={Dashboard} path={Path.Dashboard} />

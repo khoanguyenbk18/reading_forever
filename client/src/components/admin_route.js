@@ -2,9 +2,10 @@ import React from 'react';
 import {Route, Redirect} from 'react-router-dom';
 import {RoleEnum} from '../libs/enum';
 const AdminRoute = ({component: Component, ...rest}) => {
+  // const user = JSON.parse(localStorage.getItem('user'));
   const isAdmin = () => {
     const user = JSON.parse(localStorage.getItem('user'));
-    if (user) {
+    if (user) {     
       if (user.role === RoleEnum.ADMIN) return true;
     }
     return false;

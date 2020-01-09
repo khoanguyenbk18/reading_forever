@@ -30,6 +30,25 @@ export async function getListReports(request, response, next) {
     console.log(error);
   }
 }
+export async function rejectReports(request, response, next) {
+  const db = await dbConnection.get();
+  try {
+    if (request.decodedToken.role !== RoleEnum.ADMIN) {
+      return response.status(HttpStatusCode.UNAUTHORIZED).send("You're not the admin.");
+    }
+    const reportId = request.body.reportId;
+    const deleteReportResult = await db.query(
+      `
+    DELETE FROM ${REPORT_TABLE}
+    WHERE id =$1`,
+      [reportId]
+    );
+    console.log('TCL: deletePost -> rejectReport ', reportId)
+    return response.status(HttpStatusCode.OK).send('Reject Report Successfully');
+  } catch (error) {
+    console.log(error);
+  }
+}
 export async function deletePost(request, response, next) {
   const db = await dbConnection.get();
 
@@ -37,13 +56,26 @@ export async function deletePost(request, response, next) {
     if (request.decodedToken.role !== RoleEnum.ADMIN) {
       return response.status(HttpStatusCode.UNAUTHORIZED).send("You're not the admin.");
     }
-    const {postId, reportId, postCreatorId} = request.body;
+    const reportId = request.body.reportId;
     console.log('TCL: deletePost -> reportId', reportId);
+    var idPost = await db.query(
+      `
+      SELECT post_id
+      FROM ${REPORT_TABLE}
+      WHERE id = $1
+      `, [reportId]
+    )
+    var postId = idPost.rows[0].post_id;
     console.log('TCL: deletePost -> postId', postId);
-    if (postId === null || reportId === null) {
-      return response.status(HttpStatusCode.BAD_REQUEST).send('Require post id and report id.');
-    }
-
+    var CreatorId = await db.query(
+    `
+    SELECT post_creator_id
+    FROM ${POSTS_TABLE}
+    WHERE id = $1
+    `, [postId]
+    );
+    var postCreatorId = CreatorId.rows[0].post_creator_id
+    console.log('TCL: deletePost -> postCreatorId', postCreatorId);
     //detele post from posts table
     const deletePostResult = await db.query(
       `
@@ -71,12 +103,12 @@ export async function deletePost(request, response, next) {
     );
     console.log('TCL: deletePost -> deleteNotificationResult', deleteNotificationResult);
 
-    //delete all report from reports table related to post
+    // delete all report from reports table related to post
     const deleteReportResult = await db.query(
-      `
+    `
     DELETE FROM ${REPORT_TABLE}
-    WHERE post_id =$1`,
-      [postId]
+    WHERE id =$1`,
+      [reportId]
     );
     console.log('TCL: deletePost -> deleteReportResult', deleteReportResult);
 

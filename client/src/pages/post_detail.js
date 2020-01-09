@@ -1,16 +1,17 @@
-import React, {Component} from 'react';
-import moment from 'moment';
-import Modal from 'react-modal';
-import {getPostDetail, createComment, reportPost} from '../urls/post_apis';
+import React, { Component } from "react";
+import moment from "moment";
+import Modal from "react-modal";
+import { isEmpty } from "validator";
+import { getPostDetail, createComment, reportPost } from "../urls/post_apis";
 
 const customStyles = {
   content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)'
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)"
   }
 };
 
@@ -20,8 +21,8 @@ class PostDetail extends Component {
     this.state = {
       modalIsOpen: false,
       post: null,
-      comment: '',
-      report: ''
+      comment: "",
+      report: ""
     };
     this.postComment = this.postComment.bind(this);
     this.reportPost = this.reportPost.bind(this);
@@ -31,28 +32,41 @@ class PostDetail extends Component {
     this.renderModal = this.renderModal.bind(this);
     this.showToast = this.showToast.bind(this);
     this.report = this.report.bind(this);
+    if (window.performance) {
+      if (performance.navigation.type === 1) {
+        console.log("This page is reloaded");
+      } else {
+        console.log("This page is not reloaded");
+      }
+    }
   }
 
   componentDidMount() {
     window.scrollTo(0, 0);
-    const post = this.props.location.state.post;
-    getPostDetail(post.id)
+    let postId;
+    if (this.props.location.state !== undefined) {
+      postId = this.props.location.state.post.id;
+    } else {
+      postId = localStorage.getItem("currentPostId");
+    }
+    console.log("TCL: PostDetail -> componentDidMount -> postId", postId);
+    getPostDetail(postId)
       .then(res => {
-        console.log('TCL: PostDetail -> componentDidMount -> res', res);
-        this.setState({post: res.data}, () => {
-          console.log(this.state);
+        console.log("TCL: PostDetail -> componentDidMount -> res", res);
+        this.setState({ post: res.data }, () => {
+          localStorage.setItem("currentPostId", postId);
         });
       })
       .catch(err => {
-        console.log('TCL: PostDetail -> err', err);
+        console.log("TCL: PostDetail -> err", err);
       });
   }
 
   showToast() {
-    var x = document.getElementById('toast');
-    x.className = 'show';
+    var x = document.getElementById("toast");
+    x.className = "show";
     setTimeout(function() {
-      x.className = x.className.replace('show', '');
+      x.className = x.className.replace("show", "");
     }, 5000);
   }
 
@@ -62,13 +76,13 @@ class PostDetail extends Component {
   }
 
   renderMonthAndYear() {
-    const month = moment(this.state.post.created_date).format('MMM');
+    const month = moment(this.state.post.created_date).format("MMM");
     const year = moment(this.state.post.created_date).year();
-    return month + ', ' + year;
+    return month + ", " + year;
   }
 
   renderDate() {
-    const date = moment(this.state.post.created_date).format('MMM, DD YYYY');
+    const date = moment(this.state.post.created_date).format("MMM, DD YYYY");
     return date;
   }
 
@@ -77,21 +91,34 @@ class PostDetail extends Component {
   }
 
   postComment() {
-    console.log(this.state.comment);
+    console.log(this.state.comment.trim());
     console.log(this.state.post.id);
-    const commentator = JSON.parse(localStorage.getItem('user'));
-    console.log('TCL: postComment -> commentator', commentator);
+    const commentator = JSON.parse(localStorage.getItem("user"));
+    console.log("TCL: postComment -> commentator", commentator.username);
     const commentBody = {
       postId: this.state.post.id,
-      comment: this.state.comment
+      comment: this.state.comment,
+      commentator_username: commentator.username
     };
+    if (isEmpty(this.state.comment.trim()) || isEmpty(this.state.comment)){
+      window.alert("Please fill comment")
+    }
+    else{
     createComment(commentBody)
       .then(res => {
-        console.log('TCL: postComment -> res', res);
+        console.log("TCL: postComment -> res", res);
+        this.showToast();
+        let comments = this.state.post.detail_comments;
+        comments.push(commentBody, "sdfsd");
+        this.setState({
+          post: { ...this.state.post, detail_comments: comments }
+        });
+        document.getElementById('comment').value = "";
       })
       .catch(err => {
-        console.log('TCL: postComment -> err', err);
+        console.log("TCL: postComment -> err", err);
       });
+    }
   }
 
   isExistedComment() {
@@ -102,10 +129,10 @@ class PostDetail extends Component {
     if (this.isExistedComment()) {
       return this.state.post.detail_comments.map((item, index) => {
         return (
-          <div className='item' key={index}>
-            <div className='testi_item'>
+          <div className="item" key={index}>
+            <div className="testi_item">
               <p>{item.comment}</p>
-              <h4>Admin</h4>
+              <h4>{item.commentator_username}</h4>
             </div>
           </div>
         );
@@ -114,33 +141,38 @@ class PostDetail extends Component {
   }
 
   openModal(item) {
-    this.setState({modalIsOpen: true});
+    this.setState({ modalIsOpen: true });
   }
 
   afterOpenModal() {}
 
   closeModal() {
-    this.setState({modalIsOpen: false});
+    this.setState({ modalIsOpen: false });
   }
 
   report() {
-    const {id: reporterId} = JSON.parse(localStorage.getItem('user'));
+    const { id: reporterId } = JSON.parse(localStorage.getItem("user"));
     const reportBody = {
       postId: this.state.post.id,
       reporter_id: reporterId,
       content: this.state.report
     };
+    if(isEmpty(this.state.report.trim()) || isEmpty(this.state.report)){
+      window.alert("What post is wrong?")
+    }
+    else{
     reportPost(reportBody)
       .then(res => {
-        console.log('TCL: report -> res', res);
+        console.log("TCL: report -> res", res);
         console.log(this.state.report);
         console.log(this.state.post.id);
         this.showToast();
-        this.setState({modalIsOpen: false});
+        this.setState({ modalIsOpen: false });
       })
       .catch(err => {
-        console.log('TCL: report -> err', err);
+        console.log("TCL: report -> err", err);
       });
+    }
   }
 
   renderModal() {
@@ -149,36 +181,38 @@ class PostDetail extends Component {
         isOpen={this.state.modalIsOpen}
         onAfterOpen={this.afterOpenModal}
         onRequestClose={this.closeModal}
-        style={customStyles}>
-        <div className='blo4 p-b-63'>
-          <div className='text-blo4 p-t-33'>
-            <h4 className='p-b-16'>
-              <span className='tit9'>REPORT POST: {this.state.post.title}</span>
+        style={customStyles}
+      >
+        <div className="blo4 p-b-63">
+          <div className="text-blo4 p-t-33">
+            <h4 className="p-b-16">
+              <span className="tit9">REPORT POST: {this.state.post.title}</span>
             </h4>
           </div>
           {/* - */}
           <textarea
-            rows='20'
-            cols='50'
-            placeholder='What is wrong with this post?'
-            className='container-fluid'
+            rows="20"
+            cols="50"
+            placeholder="What is wrong with this post?"
+            className="container-fluid"
             onChange={evt => {
-              this.setState({report: evt.target.value});
+              this.setState({ report: evt.target.value });
             }}
             value={this.state.report}
           />
           <label
             style={{
-              backgroundColor: 'steelblue',
-              color: 'white',
+              backgroundColor: "steelblue",
+              color: "white",
               paddingLeft: 20,
               paddingRight: 20,
               paddingTop: 10,
               paddingBottom: 10,
               borderRadius: 4,
-              cursor: 'pointer'
+              cursor: "pointer"
             }}
-            onClick={this.report}>
+            onClick={this.report}
+          >
             SEND
           </label>
         </div>
@@ -192,41 +226,44 @@ class PostDetail extends Component {
         {this.renderModal()}
         {/* Title Page */}
         <section
-          className='bg-title-page flex-c-m p-t-160 p-b-80 p-l-15 p-r-15'
-          style={{backgroundImage: `url(${this.state.post.image})`}}>
-          <h2 className='tit6'>{this.state.post.author}</h2>
+          className="bg-title-page flex-c-m p-t-160 p-b-80 p-l-15 p-r-15"
+          style={{ backgroundImage: `url(${this.state.post.image})` }}
+        >
+          <h2 className="tit6">{this.state.post.author}</h2>
         </section>
         {/* Content page */}
         <section>
-          <div className='container'>
+          <div className="container">
             {/* Block4 */}
-            <div className='blo4 p-b-63'>
+            <div className="blo4 p-b-63">
               {/* - */}
-              <div className='pic-blo4 hov-img-zoom bo-rad-10 pos-relative'>
-                <div className='date-blo4 flex-col-c-m'>
-                  <span className='txt30 m-b-4'>{this.renderDateInMonth()}</span>
-                  <span className='txt31'>{this.renderMonthAndYear()}</span>
+              <div className="pic-blo4 hov-img-zoom bo-rad-10 pos-relative">
+                <div className="date-blo4 flex-col-c-m">
+                  <span className="txt30 m-b-4">
+                    {this.renderDateInMonth()}
+                  </span>
+                  <span className="txt31">{this.renderMonthAndYear()}</span>
                 </div>
               </div>
               {/* - */}
-              <div className='text-blo4 p-t-33'>
-                <h4 className='p-b-16'>
-                  <span className='tit9'>
+              <div className="text-blo4 p-t-33">
+                <h4 className="p-b-16">
+                  <span className="tit9">
                     {this.state.post.title} by {this.state.post.author}
                   </span>
                 </h4>
-                <div className='txt32 flex-w p-b-24'>
+                <div className="txt32 flex-w p-b-24">
                   <span>
                     by {this.state.post.username}
-                    <span className='m-r-6 m-l-4'>|</span>
+                    <span className="m-r-6 m-l-4">|</span>
                   </span>
                   <span>
                     {this.renderDate()}
-                    <span className='m-r-6 m-l-4'>|</span>
+                    <span className="m-r-6 m-l-4">|</span>
                   </span>
                   <span>
                     {this.state.post.category_name}
-                    <span className='m-r-6 m-l-4'>|</span>
+                    <span className="m-r-6 m-l-4">|</span>
                   </span>
                   <span>{this.state.post.views_count} Views</span>
                 </div>
@@ -234,51 +271,56 @@ class PostDetail extends Component {
               </div>
             </div>
             {/* Leave a comment */}
-            {localStorage.getItem('user') ? (
-              <form className='leave-comment p-t-10'>
-                <h4 className='txt33 p-b-14'>Leave a Comment</h4>
+            {localStorage.getItem("user") ? (
+              <form className="leave-comment p-t-10">
+                <h4 className="txt33 p-b-14">Leave a Comment</h4>
                 <textarea
-                  className='bo-rad-10 size29 bo2 txt10 p-l-20 p-t-15 m-b-10 m-t-40'
-                  name='commentent'
-                  placeholder='Comment...'
-                  defaultValue={''}
+                  id="comment"
+                  className="bo-rad-10 size29 bo2 txt10 p-l-20 p-t-15 m-b-10 m-t-40"
+                  name="commentent"
+                  placeholder="Comment..."
+                  defaultValue={""}
                   onChange={evt => {
-                    this.setState({comment: evt.target.value});
+                    this.setState({ comment: evt.target.value });
                   }}
                   // value={}
                 />
                 {/* Button Post Comment */}
                 <button
-                  type='button'
+                  type="button"
                   onClick={this.postComment}
-                  className='btn3 flex-c-m size31 txt11 trans-0-4'>
+                  className="btn3 flex-c-m size31 txt11 trans-0-4"
+                >
                   Post Comment
                 </button>
               </form>
             ) : null}
           </div>
-          <div className='container'>
-            <div className='testi_inner'>
-              <h4 className='txt33 p-b-14'>Comments</h4>
+          <div className="container">
+            <div className="testi_inner">
+              <h4 className="txt33 p-b-14">Comments</h4>
               {this.isExistedComment() ? (
-                <div className='testi_slider owl-carousel'>{this.renderListComments()}</div>
+                <div className="testi_slider owl-carousel">
+                  {this.renderListComments()}
+                </div>
               ) : (
-                <div className='txt35 p-b-14'>There is no comnment</div>
+                <div className="txt35 p-b-14">There is no comnment</div>
               )}
             </div>
           </div>
-          <div className='container'>
+          <div className="container">
             <button
-              type='button'
+              type="button"
               onClick={this.reportPost}
-              className='btn3 flex-c-m size31 txt11 trans-0-4'>
+              className="btn3 flex-c-m size31 txt11 trans-0-4"
+            >
               Report
             </button>
           </div>
         </section>
-        <div id='toast'>
-          <div id='img'>DONE!</div>
-          <div id='desc'>...Your report is sent to admin....</div>
+        <div id="toast">
+          <div id="img">DONE!</div>
+          <div id="desc">Your action is completed!</div>
         </div>
       </div>
     ) : null;

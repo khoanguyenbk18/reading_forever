@@ -6,6 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { createPost } from "../urls/post_apis";
 import { isEmpty } from "validator";
 import { Path } from "../libs/path";
+import ProgressBar from 'react-bootstrap/ProgressBar'
 class CreatePost extends Component {
   constructor(props) {
     super(props);
@@ -38,8 +39,8 @@ class CreatePost extends Component {
     this.setState({ listCategories: listCategories });
   }
 
-  handleUploadStart = () => this.setState({ isUploading: true, progress: 0 });
-  handleProgress = progress => this.setState({ progress });
+  handleUploadStart = () => {this.setState({ isUploading: true, progress: 0 })};
+  handleProgress = progress => this.setState({ uploadProgress: progress });
   handleUploadError = error => {
     this.setState({ isUploading: false });
     console.error(error);
@@ -73,7 +74,7 @@ class CreatePost extends Component {
         this.showToast();
         setTimeout(() => {
           this.props.history.push(Path.LandingPage);
-        });
+        }, 3000);
       })
       .catch(err => {
         console.log("TCL: CreatePost -> createPostToServer -> err", err);
@@ -96,7 +97,7 @@ class CreatePost extends Component {
         this.fileUploader.startUpload(picture);
       }
     } else {
-      window.alert("You need to fill all the content to post");
+      window.alert("Somethine wrong, check all fill");
     }
   }
 
@@ -123,7 +124,7 @@ class CreatePost extends Component {
     );
     if (isEmpty(this.state.title)) return false;
     if (isEmpty(this.state.author)) return false;
-    if (this.state.picture === null || this.state.picture === undefined)
+    if (this.state.picture === null || this.state.picture === undefined|| !this.state.picture.type.includes("image"))
       return false;
     if (isEmpty(this.state.content)) return false;
     if (this.state.category_id === 0) return false;
@@ -136,7 +137,8 @@ class CreatePost extends Component {
     } = event;
 
     this.setState({ picture: files[0] }, () => {
-      console.log(this.state.picture);
+      // var a = this.state.picture.type;
+      console.log(this.state.picture.type.includes("image"));
     });
   };
 
@@ -162,6 +164,11 @@ class CreatePost extends Component {
   render() {
     return (
       <div>
+        <section
+          className='bg-title-page flex-c-m p-t-160 p-b-80 p-l-15 p-r-15'
+          style={{backgroundImage: 'url(images/bg-registration-form-1.jpg)'}}>
+          <h2 className='tit6 t-center'>READING FOREVER</h2>
+        </section>
         <section>
           <div className="container">
             {/* Block4 */}
@@ -216,6 +223,9 @@ class CreatePost extends Component {
                     this.fileUploader = instance;
                   }}
                 />
+                <div className="progress">
+                  <ProgressBar variant="success" now={this.state.uploadProgress} style={{width: '25%', height: '2px'}} animated />
+                </div>
                 <select
                   name="true"
                   id="true"

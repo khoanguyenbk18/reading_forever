@@ -1,4 +1,4 @@
-import dbConnection, {USERS_TABLE, POSTS_TABLE, NOTIFICATION_TABLE} from '../database';
+import dbConnection, {USERS_TABLE, POSTS_TABLE, NOTIFICATION_TABLE, REPORT_TABLE} from '../database';
 import HttpStatusCode from 'http-status-codes';
 import {RoleEnum} from '../lib/enums/role_enum';
 import {validateRegisterRequest} from '../validators/member_validators';
@@ -66,16 +66,27 @@ export const register = async (request, response, next) => {
 
 export const login = async (request, response, next) => {
   const db = await dbConnection.get();
+  console.log("here");
   try {
     const loginRequestBody = request.body;
     const username = loginRequestBody.username;
+    
     console.log('TCL: login -> username', username);
 
     const loginResult = await db.query(`
     SELECT * FROM ${USERS_TABLE}
     WHERE username = '${username}'
     `);
-
+    const notiBadge = await db.query(`
+    SELECT COUNT(*) FROM ${POSTS_TABLE}
+    WHERE ${POSTS_TABLE}.status = 1
+    `);
+    const notiReport = await db.query(
+    `
+    SELECT COUNT(*) AS report
+    FROM ${REPORT_TABLE}
+    `
+    )
     if (loginResult.rows.length == 0) {
       return response.status(HttpStatusCode.BAD_REQUEST).send('There is not exist account');
     } else {
@@ -89,7 +100,14 @@ export const login = async (request, response, next) => {
         const encryptedToken = await generateTokenAsync(loginMember.id, loginMember);
         console.log("TCL: login -> encryptedToken", encryptedToken)
         loginMember.api_token = BEARER_AUTHENTICATION_SCHEMA + ' ' + encryptedToken;
-        return response.status(HttpStatusCode.OK).send(loginResult.rows);
+        var resultLogin
+        if(loginMember.role ===1){
+          resultLogin = [loginResult.rows[0], notiBadge.rows[0], notiReport.rows[0]];
+        }
+        else{
+          resultLogin = [loginResult.rows[0], {"count": 0}, {"report": 0}];
+        }
+        return response.status(HttpStatusCode.OK).send(resultLogin);
       } else {
         return response.status(HttpStatusCode.BAD_REQUEST).send('password is incorrect');
       }

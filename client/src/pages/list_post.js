@@ -1,6 +1,7 @@
 import ItemPost from '../components/item_post';
 import Category from '../components/categories';
 import React, {Component} from 'react';
+import ScrollUpButton from "react-scroll-up-button";
 import {
   getListPost,
   getListCategories,
@@ -15,25 +16,26 @@ class ListPost extends Component {
     this.state = {
       listPosts: {
         data: null,
-        pageNumber: 1,
         totalPage: 0
       },
+      listSearch: null,
       listCategories: [],
-      listMostPopular: []
+      listMostPopular: [],
+      currentPage: 1,
+      pageLength: 5
     };
     this.onSearchPost = this.onSearchPost.bind(this);
     this.inputSearch = React.createRef();
   }
-
   componentDidMount() {
-    getListPost(this.state.pageNumber)
+    getListPost(this.state.currentPage)
       .then(res => {
         this.setState({listPosts: res.data}, () => {});
+        console.log('TCL -> list_detail -> getlistpost ->',this.state)
       })
       .catch(error => {
         console.log(error);
       });
-
     getListCategories()
       .then(res => {
         localStorage.setItem('categories', JSON.stringify(res.data));
@@ -59,7 +61,13 @@ class ListPost extends Component {
   }
 
   renderListPost() {
-    if (this.state.listPosts.data) {
+    console.log('TCL -> list_detail -> renderpost ->',this.state)
+    if (this.state.listSearch){
+      return this.state.listSearch.map((item, index) => {
+        return <ItemPost key={index} post={item} />;
+      });
+    }
+    if (this.state.listPosts.data && !this.state.listSearch) {
       if (this.state.listPosts.data.length > 0) {
         return this.state.listPosts.data.map((item, index) => {
           return <ItemPost key={index} post={item} />;
@@ -67,9 +75,11 @@ class ListPost extends Component {
       } else {
         return <h2>THERE IS NOT POST</h2>;
       }
-    } else {
+    } 
+    else {
       return null;
     }
+    
   }
 
   renderMostPopular() {
@@ -100,28 +110,42 @@ class ListPost extends Component {
     }
   }
 
-  renderPagination() {
-    let listPaging = [];
-    for (let i = 0; i < this.state.listPosts.totalPage; i++) {
-      listPaging.push(
-        <Link
-          onClick={() => {
-            getListPost(i)
-              .then(res => {
-                console.log('TCL: renderPagination -> res', res);
-                this.setState({listPosts: res.data});
-              })
-              .catch(err => {
-                console.log(err);
-              });
-          }}
-          className='item-pagination flex-c-m trans-0-4 active-pagination'>
-          {i}
-        </Link>
-      );
+  onPrevPage = (e) =>{
+    if(this.state.currentPage === 1) return;
+    else{
+      this.setState({
+        currentPage: this.state.currentPage - 1
+      });
+      getListPost(this.state.currentPage)
+      .then(res => {
+        getListPost(this.state.currentPage)
+        .then(res => {
+          this.setState({listPosts: res.data}, () => {});
+        })
+      })
+      .catch(err => {
+        console.log(err);
+      });
     }
-
-    return listPaging;
+  }
+  onNextPage = (e) => {
+    if(this.state.currentPage > this.state.listPosts.totalPage - 1) return;
+    else{
+      this.setState({
+        currentPage: this.state.currentPage + 1
+      });
+      getListPost(this.state.currentPage)
+      .then(res => {
+        getListPost(this.state.currentPage)
+        .then(res => {
+          this.setState({listPosts: res.data}, () => {});
+        })
+      })
+      .catch(err => {
+        console.log(err);
+      });
+      // this.renderListPost()
+    }
   }
 
   onSearchPost() {
@@ -131,23 +155,13 @@ class ListPost extends Component {
     if (queryString) {
       getSearchListPost(queryString)
         .then(res => {
-          console.log('TCL: ListPost -> onSearchPost -> res', res);
-          this.setState({listPosts: res}, () => {});
+          this.setState({listSearch: res.data}, () => {});
         })
         .catch(err => {
           console.log(err);
         });
-    } else {
-      getListPost(1)
-        .then(res => {
-          this.setState({listPosts: res.data}, () => {});
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
+    } 
   }
-
   render() {
     return (
       <div>
@@ -168,7 +182,23 @@ class ListPost extends Component {
                   {/* Block4 */}
                   {/* Pagination */}
                   <div className='pagination flex-l-m flex-w m-l--6 p-t-25'>
-                    {this.renderPagination()}
+                    {/* {this.renderPagination()} */}
+                    <button key="prev"
+                      // hidden
+                      className="pagination-btn prev"
+                      onClick={this.onPrevPage}
+                      style ={{float:"left"}}>
+                      {"<-"}
+                    </button>
+                    <text style={{float:"center", background:"black"}}>
+                      {this.state.currentPage}/{this.state.listPosts.totalPage}
+                    </text>
+                    <button key="next"
+                      className="pagination-btn next"
+                      onClick={this.onNextPage}
+                      style ={{float:"right"}}>
+                      {"->"}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -199,12 +229,16 @@ class ListPost extends Component {
                     <h4 className='txt33 p-b-35 p-t-58'>Most popular</h4>
                     <ul>{this.renderMostPopular()}</ul>
                   </div>
+                  <div>
+                  <ScrollUpButton />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
       </div>
+    
     );
   }
 }

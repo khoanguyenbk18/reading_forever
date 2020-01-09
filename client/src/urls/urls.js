@@ -5,7 +5,7 @@ const API_POSTS = 'posts';
 const API_USERS = 'users';
 const API_ADMIN = 'admin';
 //POST APIs
-export const GET_LIST_POSTS_API = (pageNumber = 1) =>
+export const GET_LIST_POSTS_API = pageNumber =>
   `/api/${API_VERSION}/${API_POSTS}/list?pageNumber=${pageNumber}`;
 
 export const GET_LIST_POSTS_BY_CATEGORY_API = (categoryId = 1) =>
@@ -33,3 +33,5 @@ export const UPDATE_PROFILE_API = `/api/${API_VERSION}/${API_USERS}/editProfile`
 
 //ADMIN APIs
 export const GET_LIST_REPORTS = `/api/${API_VERSION}/${API_ADMIN}/report/list`;
+export const REJECT_REPORTS = `/api/${API_VERSION}/${API_ADMIN}/report/reject`;
+export const REJECT_POST = `/api/${API_VERSION}/${API_ADMIN}/report/deletePost`;

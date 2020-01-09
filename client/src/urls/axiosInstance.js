@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {BASE_URL, BASE_URL_LOCAL} from './urls';
 const axiosInstance = axios.create({
-  baseURL: BASE_URL
+  baseURL: BASE_URL_LOCAL
 });
 
 axiosInstance.defaults.timeout = 20000; //Timeout request

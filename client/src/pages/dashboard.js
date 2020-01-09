@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import Modal from 'react-modal';
 import moment from 'moment';
 import {getListPostPending, acceptPost, rejectPost} from '../urls/post_apis';
-
 const customStyles = {
   content: {
     top: '50%',
@@ -20,7 +19,9 @@ class Dashboard extends Component {
     this.state = {
       modalIsOpen: false,
       listPostPending: [],
-      post: null
+      post: null,
+      currentPage: 1,
+      pageLength: 5
     };
     this.renderPendingPosts = this.renderPendingPosts.bind(this);
     this.onClickAccept = this.onClickAccept.bind(this);
@@ -68,15 +69,12 @@ class Dashboard extends Component {
   }
 
   updateListPendingPost(post) {
-    if (this.state.listPostPending.length === 1) {
+    if (this.state.listPostPending.length === 0) {
       //list empty --> get new 10 post
       this.showToast();
-      this.getListPendingPostFromServer();
+      // this.getListPendingPostFromServer();
     } else {
-      //remove current post
-      this.setState({
-        listPostPending: this.state.listPostPending.filter(item => item.id !== post.id)
-      });
+      this.getListPendingPostFromServer();
     }
   }
 
@@ -90,10 +88,42 @@ class Dashboard extends Component {
       });
   }
 
-  renderPendingPosts() {
-    return this.state.listPostPending.map((item, index) => {
+  onPrevPage = (e) =>{
+    console.log("prev -> ", this.state.currentPage)
+    if(this.state.currentPage === 1) return;
+    else{
+      this.setState({
+        currentPage: this.state.currentPage - 1
+      });
+      this.renderPendingPosts(this.getData(this.state.currentPage))
+    }
+  }
+  onNextPage = (e) => {
+    // console.log("next -> ", this.state.currentPage)
+    if(this.state.currentPage > Math.ceil(this.state.listPostPending.length/this.state.pageLength) - 1) return;
+    else{
+      this.setState({
+        currentPage: this.state.currentPage + 1
+      });
+      console.log("next -> ", this.state.currentPage)
+      this.renderPendingPosts(this.getData(this.state.currentPage));
+    }
+  }
+  getData(pageNo){
+    console.log("data -> ", this.state.currentPage)
+    var startOfRecord = (pageNo - 1) * this.state.pageLength;
+    var endOfRecord = startOfRecord + this.state.pageLength;
+    var listPending = this.state.listPostPending.slice(startOfRecord,endOfRecord);
+    return listPending
+  }
+
+  renderPendingPosts(listPending) {
+    console.log("xyz")
+    if(listPending.length){
+    return listPending.map((item, index) => {
       return (
         <tr
+          style={{flexWrap:"nowrap", height:"100px"}}
           key={index}
           onClick={e => {
             e.preventDefault();
@@ -102,9 +132,8 @@ class Dashboard extends Component {
           }}>
           <td className='column1'>{moment(item.created_date).format('DD-MM-YYYY')}</td>
           <td className='column2'>{item.category_name}</td>
-          <td className='column3'>{item.title}</td>
+          <td className='column3' >{item.title}</td>
           <td className='column4'>{item.author}</td>
-          <td className='column5'>{item.post_creator} </td>
           <td className='column6'>
             <button
               type='button'
@@ -131,7 +160,7 @@ class Dashboard extends Component {
           </td>
         </tr>
       );
-    });
+    });}
   }
 
   openModal(item) {
@@ -162,6 +191,7 @@ class Dashboard extends Component {
 
   renderDate() {
     const date = moment(this.state.post.created_date).format('MMM, DD YYYY');
+    console.log('Post Comment here');
     return date;
   }
 
@@ -220,6 +250,11 @@ class Dashboard extends Component {
   render() {
     return (
       <div>
+        <section
+          className='bg-title-page flex-c-m p-t-160 p-b-80 p-l-15 p-r-15'
+          style={{backgroundImage: 'url(images/bg-registration-form-1.jpg)'}}>
+          <h2 className='tit6 t-center'>READING FOREVER</h2>
+        </section>
         {this.state.post !== null ? this.renderModal() : null}
         <div className='container-table100'>
           <div>
@@ -231,19 +266,33 @@ class Dashboard extends Component {
                     <th className='column2'>Category</th>
                     <th className='column3'>Title</th>
                     <th className='column4'>Author</th>
-                    <th className='column5'>Post Creator</th>
-                    <th className='column6'>Accept</th>
-                    <th className='column7'>Reject</th>
+                    <th className='column6'>Reject</th>
+                    <th className='column7'>Accept</th>
                   </tr>
                 </thead>
-                <tbody>{this.renderPendingPosts()}</tbody>
+                <tbody>{console.log("abc"), this.renderPendingPosts(this.getData(this.state.currentPage))}</tbody>
               </table>
             </div>
+            <button key="prev"
+                className="pagination-btn prev"
+                onClick={this.onPrevPage}
+                style ={{float:"left"}}>
+                {"<"}
+              </button>
+              <button key="next"
+                className="pagination-btn next"
+                onClick={this.onNextPage}
+                style ={{float:"right"}}>
+                {">"}
+              </button>
+              <text style={{marginLeft:"350px", background:"white"}}>
+                {this.state.currentPage}/{Math.ceil(this.state.listPostPending.length/this.state.pageLength)}
+              </text>
           </div>
         </div>
         <div id='toast'>
           <div id='img'>...</div>
-          <div id='desc'>...Get new 10 pending post....</div>
+          <div id='desc'>...No more pending post....</div>
         </div>
       </div>
     );

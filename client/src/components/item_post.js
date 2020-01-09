@@ -1,13 +1,13 @@
 import React from 'react';
 import moment from 'moment';
+import TextTruncate from 'react-text-truncate';
 import {Link} from 'react-router-dom';
 const ItemPost = props => {
   const {post} = props;
-  const day = moment(post.created_date).daysInMonth();
+  const day = moment(post.created_date).format('DD');
   const month = moment(post.created_date).format('MMM');
   const year = moment(post.created_date).year();
   const date = moment(post.created_date).format('MMM, DD YYYY');
-
   const postDetailPage = {pathname: '/detail', state: {post}};
   return (
     <div className='blob4 p-b-63'>
@@ -46,11 +46,23 @@ const ItemPost = props => {
           </span>
           <span>{post.views_count} Views</span>
         </div>
-        <p>{post.content}</p>
+        <TextTruncate
+          line={3}
+          element="span"
+          truncateText="…"
+          text= {post.content}
+          textTruncateChild={
+            <Link to={postDetailPage} className='dis-block txt4 m-t-30'>
+              Continue Reading
+              <i className='fa fa-long-arrow-right m-l-10' aria-hidden='true' />
+            </Link>
+          }
+        />
+        {/* <p style={{textAlign:'justify'}}>{post.content}</p>
         <Link to={postDetailPage} className='dis-block txt4 m-t-30'>
           Continue Reading
           <i className='fa fa-long-arrow-right m-l-10' aria-hidden='true' />
-        </Link>
+        </Link> */}
       </div>
     </div>
   );

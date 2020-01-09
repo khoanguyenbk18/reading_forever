@@ -9,6 +9,9 @@ class ScrollToTop extends React.Component {
         window.scrollTo(0, 0);
       }, 200);
     }
+    else{
+      window.location.reload();
+    }
   }
 
   render() {

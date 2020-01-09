@@ -113,6 +113,11 @@ class EditUserProfile extends Component {
   render() {
     return (
       <div>
+        <section
+          className='bg-title-page flex-c-m p-t-160 p-b-80 p-l-15 p-r-15'
+          style={{backgroundImage: 'url(images/bg-registration-form-1.jpg)'}}>
+          <h2 className='tit6 t-center'>READING FOREVER</h2>
+        </section>
         {/*================Home Banner Area =================*/}
         <section className='home_banner_area'>
           <div className='container box_1620'>
