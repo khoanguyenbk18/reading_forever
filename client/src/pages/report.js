@@ -6,12 +6,13 @@ import {getPostDetail} from '../urls/post_apis';
 
 const customStyles = {
   content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)'
+    overflowY: 'scroll'
+    // top: '50%',
+    // left: '50%',
+    // right: '50%',
+    // bottom: 'auto',
+    // marginRight: '-50%',
+    // transform: 'translate(-50%, -50%)'
   }
 };
 
@@ -25,7 +26,7 @@ class Report extends Component {
       currentPage: 1,
       pageLength: 5
     };
-    this.renderPendingPosts = this.renderReports.bind(this);
+    this.renderReports = this.renderReports.bind(this);
 
     this.openModal = this.openModal.bind(this);
     this.afterOpenModal = this.afterOpenModal.bind(this);
@@ -113,7 +114,6 @@ class Report extends Component {
     }
   }
   getData(pageNo){
-    console.log("data -> ", this.state.currentPage)
     var startOfRecord = (pageNo - 1) * this.state.pageLength;
     var endOfRecord = startOfRecord + this.state.pageLength;
     var listReport = this.state.listReport.slice(startOfRecord,endOfRecord);
@@ -126,7 +126,7 @@ class Report extends Component {
           key={index}
           onClick={e => {
             e.preventDefault();
-            console.log('TCL: Dashboard -> renderPendingPosts -> e.currentTarget', e.currentTarget);
+            console.log('TCL: Report -> renderReports -> e.currentTarget', e.currentTarget);
             this.openModal(item);
           }}>
           <td className='column1' style = {{textAlign:"center"}}>{item.id}</td>
@@ -187,11 +187,13 @@ class Report extends Component {
 
   ///////
   renderDateInMonth() {
+    console.log('renderDateInMonth -> ', this.state.post.created_date)
     const day = moment(this.state.post.created_date).daysInMonth();
     return day;
   }
 
   renderMonthAndYear() {
+
     if (!this.state.post) return;
     const month = moment(this.state.post.created_date).format('MMM');
     const year = moment(this.state.post.created_date).year();
@@ -217,6 +219,7 @@ class Report extends Component {
               <span className='txt30 m-b-4'>{this.renderDateInMonth()}</span>
               <span className='txt31'>{this.renderMonthAndYear()}</span>
             </div>
+            {console.log('return->renderModal')}
           </div>
           {/* - */}
           <div className='text-blo4 p-t-33'>

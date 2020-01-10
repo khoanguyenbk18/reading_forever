@@ -3,6 +3,7 @@ import moment from "moment";
 import Modal from "react-modal";
 import { isEmpty } from "validator";
 import { getPostDetail, createComment, reportPost } from "../urls/post_apis";
+import ScrollUpButton from "react-scroll-up-button";
 
 const customStyles = {
   content: {
@@ -100,7 +101,7 @@ class PostDetail extends Component {
       comment: this.state.comment,
       commentator_username: commentator.username
     };
-    if (isEmpty(this.state.comment.trim()) || isEmpty(this.state.comment)){
+    if (isEmpty(this.state.comment.trim()) || this.state.comment === ''){
       window.alert("Please fill comment")
     }
     else{
@@ -318,6 +319,9 @@ class PostDetail extends Component {
             </button>
           </div>
         </section>
+        <div>
+          <ScrollUpButton />
+        </div>
         <div id="toast">
           <div id="img">DONE!</div>
           <div id="desc">Your action is completed!</div>

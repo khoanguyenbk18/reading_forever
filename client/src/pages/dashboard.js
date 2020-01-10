@@ -4,12 +4,13 @@ import moment from 'moment';
 import {getListPostPending, acceptPost, rejectPost} from '../urls/post_apis';
 const customStyles = {
   content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)'
+    overflowY: 'scroll'
+    // top: '100%',
+    // left: '50%',
+    // right: 'auto',
+    // bottom: 'auto',
+    // marginRight: '0%',
+    // transform: 'translate(-50%, -50%)'
   }
 };
 
@@ -266,8 +267,8 @@ class Dashboard extends Component {
                     <th className='column2'>Category</th>
                     <th className='column3'>Title</th>
                     <th className='column4'>Author</th>
-                    <th className='column6'>Reject</th>
-                    <th className='column7'>Accept</th>
+                    <th className='column6'>Accept</th>
+                    <th className='column7'>Reject</th>
                   </tr>
                 </thead>
                 <tbody>{console.log("abc"), this.renderPendingPosts(this.getData(this.state.currentPage))}</tbody>
