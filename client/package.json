@@ -24,7 +24,7 @@
     "react-table-6": "^6.11.0",
     "react-text-truncate": "^0.16.0",
     "react-validation": "^3.0.7",
-    "validator": "^11.1.0"
+    "validator": "^13.7.0"
   },
   "scripts": {
     "start": "react-scripts start",
